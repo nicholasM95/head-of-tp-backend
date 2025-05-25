@@ -14,7 +14,7 @@ module "application" {
 }
 
 module "vault_connection" {
-  depends_on                = [module.vault]
+  depends_on                = [module.vault, module.application]
   source                    = "git::https://github.com/nicholasM95/terraform-modules.git//modules/vault-k8s?ref=v1.8.6"
   vault_path                = var.name
   kubernetes_ca_cert        = var.kubernetes_ca_cert
