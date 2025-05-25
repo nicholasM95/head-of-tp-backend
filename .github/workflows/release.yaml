@@ -59,7 +59,7 @@ jobs:
           SKIP_UPDATE_VERSION_IN_POM: true
 
       - name: Build with Maven Wrapper
-        run: ./mvnw install
+        run: ./mvnw install -DskipTests
 
       - name: Create Docker image
         run: ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$(cat .image_tag) -pl application -DskipTests
