@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-route_point
+      comment: create-table-route_point
+      author: nicholasmeyers
+      changes:
+        - createTable:
+            tableName: route_point
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: route_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: latitude
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: longitude
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: altitude
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_route_id
+            tableName: route_point
+            columns:
+              - column:
+                  name: route_id
+        - addForeignKeyConstraint:
+            baseTableName: route_point
+            baseColumnNames: route_id
+            constraintName: fk_route_point_route
+            referencedTableName: route
+            referencedColumnNames: id

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: head-of-tp
+  datasource:
+    url: jdbc:tc:postgresql:16.3-alpine:///headoftptest

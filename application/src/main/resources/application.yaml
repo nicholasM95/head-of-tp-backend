@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: head-of-tp
+  jackson:
+    time-zone: Europe/Brussels
+logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG

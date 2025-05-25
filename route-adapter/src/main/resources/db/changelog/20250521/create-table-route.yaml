@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-route
+      comment: create-table-route
+      author: nicholasmeyers
+      changes:
+        - createTable:
+            tableName: route
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: route_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: elevation_gain
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: estimated_average_speed
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: distance_in_meters
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration_in_minutes
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: estimated_start_time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: estimated_end_time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pause_in_minutes
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: datetime
+              - column:
+                  name: average_speed
+                  type: double precision
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false

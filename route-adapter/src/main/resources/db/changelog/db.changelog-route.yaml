@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/20250521/create-table-route.yaml
+  - include:
+      file: db/changelog/20250521/create-table-route_point.yaml

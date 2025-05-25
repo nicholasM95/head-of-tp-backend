@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-device_location
+      comment: create-table-device_location
+      author: nicholasmeyers
+      changes:
+        - createTable:
+            tableName: device_location
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: device_id
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location_timestamp
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: latitude
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: longitude
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: speed
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bearing
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: altitude
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: accuracy
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: battery
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_device_id_timestamp
+            tableName: device_location
+            columns:
+              - column:
+                  name: device_id
+              - column:
+                  name: location_timestamp
