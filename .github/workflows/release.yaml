@@ -45,7 +45,7 @@ jobs:
           npm install semantic-release @semantic-release/exec @semantic-release/changelog @semantic-release/github
 
       - name: Log in to the Container registry
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@6d4b68b490aef8836e8fb5e50ee7b3bdfa5894f0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -58,8 +58,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SKIP_UPDATE_VERSION_IN_POM: true
 
-      - name: Run tests
-        run: ./mvnw test
+      - name: Build with Maven Wrapper
+        run: ./mvnw install
 
       - name: Create Docker image
         run: ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$(cat .image_tag) -pl application -DskipTests
