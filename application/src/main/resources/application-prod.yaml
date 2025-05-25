@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    vault:
+      enabled: true
+      authentication: kubernetes
+      kubernetes:
+        role: head-of-tp
+        kubernetes-path: head-of-tp
+        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      uri: ${VAULT_URI}
+      scheme: https
+      kv:
+        enabled: true
+        backend: head-of-tp
+        default-context: secret
+  config:
+    import: vault://
