@@ -31,7 +31,7 @@
     <properties>
         <java.version>24</java.version>
         <jpx.version>3.1.0</jpx.version>
-        <tika.version>2.9.4</tika.version>
+        <tika.version>3.2.0</tika.version>
     </properties>
 
     <dependencies>
