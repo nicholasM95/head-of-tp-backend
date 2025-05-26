@@ -1,12 +1,12 @@
 package be.nicholasmeyers.headoftp.route.adapter.socket;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+//import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+//import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+//import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+//import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-@Configuration
+/*@Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
@@ -20,4 +20,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/route-websocket").setAllowedOrigins("http://localhost:5173").withSockJS();
     }
-}
+}*/

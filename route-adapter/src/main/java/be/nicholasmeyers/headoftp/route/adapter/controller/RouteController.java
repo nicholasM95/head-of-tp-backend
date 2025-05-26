@@ -20,7 +20,7 @@ import io.jenetics.jpx.TrackSegment;
 import io.jenetics.jpx.WayPoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tika.Tika;
+//import org.apache.tika.Tika;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,7 +43,7 @@ public class RouteController implements RouteApi {
     private static final String MIME_TYPE_XML_GPX = "application/gpx+xml";
     private static final RoutePointProjection BRUSSELS_CENTER = new RoutePointProjection(50.8467, 4.3499, 0.0);
 
-    private final Tika tika = new Tika();
+    //private final Tika tika = new Tika();
 
     private final CreateRouteUseCase createRouteUseCase;
     private final DeleteRouteUseCase deleteRouteUseCase;
@@ -55,11 +55,11 @@ public class RouteController implements RouteApi {
     @Override
     public ResponseEntity<Void> createRoute(Resource body) {
         try (InputStream inputStream = body.getInputStream()) {
-            String mimeType = tika.detect(inputStream);
+            /*String mimeType = tika.detect(inputStream);
             if (!mimeType.equals(MIME_TYPE_XML) && !mimeType.equals(MIME_TYPE_XML_GPX)) {
                 log.error("Invalid mime type: {}", mimeType);
                 return ResponseEntity.badRequest().build();
-            }
+            }*/
 
             GPX gpx = getGPX(inputStream);
 
