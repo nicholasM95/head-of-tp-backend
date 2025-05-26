@@ -85,13 +85,13 @@
             <artifactId>micrometer-tracing-bridge-brave</artifactId>
         </dependency>
 
-        <!--<dependency>
+        <dependency>
             <groupId>be.nicholasmeyers</groupId>
             <artifactId>device-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>be.nicholasmeyers</groupId>
             <artifactId>route-adapter</artifactId>
             <version>${project.version}</version>
