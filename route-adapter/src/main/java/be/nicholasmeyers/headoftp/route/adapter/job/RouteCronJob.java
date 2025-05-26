@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/*@RequiredArgsConstructor
+@RequiredArgsConstructor
 @Component
 public class RouteCronJob {
 
@@ -16,4 +16,4 @@ public class RouteCronJob {
         sendVirtualGhostUseCase.sendVirtualGhost();
     }
 
-}*/
+}
