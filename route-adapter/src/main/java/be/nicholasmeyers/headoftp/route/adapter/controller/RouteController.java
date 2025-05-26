@@ -13,11 +13,11 @@ import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutePointsByRouteIdUseCa
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutesUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindRoutePointCenterByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.PatchRouteUseCase;
-//import io.jenetics.jpx.GPX;
-//import io.jenetics.jpx.Metadata;
-//import io.jenetics.jpx.Track;
-//import io.jenetics.jpx.TrackSegment;
-//import io.jenetics.jpx.WayPoint;
+import io.jenetics.jpx.GPX;
+import io.jenetics.jpx.Metadata;
+import io.jenetics.jpx.Track;
+import io.jenetics.jpx.TrackSegment;
+import io.jenetics.jpx.WayPoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.tika.Tika;
@@ -59,14 +59,14 @@ public class RouteController implements RouteApi {
             if (!mimeType.equals(MIME_TYPE_XML) && !mimeType.equals(MIME_TYPE_XML_GPX)) {
                 log.error("Invalid mime type: {}", mimeType);
                 return ResponseEntity.badRequest().build();
-            }
+            }*/
 
-            /*GPX gpx = getGPX(inputStream);
+            GPX gpx = getGPX(inputStream);
 
             String name = getRouteName(gpx);
-            List<CreateRoutePointRequest> createRoutePointRequests = getRoute(gpx);*/
+            List<CreateRoutePointRequest> createRoutePointRequests = getRoute(gpx);
 
-            Notification notification = createRouteUseCase.createRoute("name", List.of());
+            Notification notification = createRouteUseCase.createRoute(name, createRoutePointRequests);
             if (notification.hasErrors()) {
                 log.error(notification.getErrors().toString());
                 return ResponseEntity.badRequest().build();
@@ -139,7 +139,7 @@ public class RouteController implements RouteApi {
                 .build();
     }
 
-    /*private GPX getGPX(InputStream inputStream) throws IOException {
+    private GPX getGPX(InputStream inputStream) throws IOException {
         return GPX.Reader.DEFAULT.read(inputStream);
     }
 
@@ -168,5 +168,5 @@ public class RouteController implements RouteApi {
             altitude = wayPoint.getElevation().get().doubleValue();
         }
         return new CreateRoutePointRequest(wayPoint.getLatitude().doubleValue(), wayPoint.getLongitude().doubleValue(), altitude);
-    }*/
+    }
 }
