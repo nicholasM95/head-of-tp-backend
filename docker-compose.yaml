@@ -2,7 +2,7 @@ services:
   postgres:
     container_name: headoftp
     hostname: postgres
-    image: postgres:16.9-alpine@sha256:7c8c4bf319769e3daf2545ba435248edc650d3621de678db6d9846581036e3da
+    image: postgres:17.5-alpine@sha256:f325a29ec9deb7039c5f07761d77d79d537dac836ecd99f982f6ca5476724604
     environment:
       POSTGRES_PASSWORD: headoftp
       POSTGRES_DB: headoftp
