@@ -1,3 +1,15 @@
+## [1.0.1](https://github.com/nicholasM95/head-of-tp-backend/compare/v1.0.0...v1.0.1) (2025-05-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.jenetics:jpx to v3.2.1 ([034bc6d](https://github.com/nicholasM95/head-of-tp-backend/commit/034bc6d35dce29708cc029eb1fc18e4b9e163a8b))
+* **deps:** update dependency io.swagger.parser.v3:swagger-parser to v2.1.28 ([48ab3f6](https://github.com/nicholasM95/head-of-tp-backend/commit/48ab3f68ad5a6223af4e9a0e8295f52540887136))
+* **deps:** update dependency io.swagger.parser.v3:swagger-parser to v2.1.29 ([e10e04d](https://github.com/nicholasM95/head-of-tp-backend/commit/e10e04de47200b397a5e5cb86846ef782fb2eb90))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.5.0 ([8d687f9](https://github.com/nicholasM95/head-of-tp-backend/commit/8d687f99870da4b579e88fc64e9b16f9b7f60c36))
+* **deps:** update tika monorepo to v2.9.4 ([c22b905](https://github.com/nicholasM95/head-of-tp-backend/commit/c22b905fac930e4624fe3bc124b7de7c18a70ea2))
+* **deps:** update tika monorepo to v3 ([8822b77](https://github.com/nicholasM95/head-of-tp-backend/commit/8822b7709709ddedc153b973eaa77d641edb06f8))
+
 # 1.0.0 (2025-05-25)
 
 
