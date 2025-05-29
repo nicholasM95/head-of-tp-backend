@@ -63,7 +63,7 @@ public class DeviceLocationFactoryTest {
         }
 
         @Test
-        void givenCreateDeviceLocationRequestWithInvalideDeviceId_whenCreateDeviceLocation_thenReturnCreationOfDeviceLocationAndNotificationError() {
+        void givenCreateDeviceLocationRequestWithInvalidDeviceId_whenCreateDeviceLocation_thenReturnCreationOfDeviceLocationAndNotificationError() {
             // Given
             CreateDeviceLocationRequest createDeviceLocationRequest = new CreateDeviceLocationRequest("67891231273182931231293", 34335L, 45.5, 43.8,
                     90.1, 34.4, 13.9999, 88.0, 100.0);

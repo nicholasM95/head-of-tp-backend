@@ -3,6 +3,7 @@ package be.nicholasmeyers.headoftp.device.domain;
 import be.nicholasmeyers.headoftp.common.domain.validation.DoubleValidator;
 import be.nicholasmeyers.headoftp.common.domain.validation.LongValidator;
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
+import be.nicholasmeyers.headoftp.common.domain.validation.ObjectValidator;
 import be.nicholasmeyers.headoftp.common.domain.validation.StringValidator;
 import lombok.Getter;
 
@@ -42,8 +43,8 @@ public class DeviceLocation {
         LongValidator.notZero("timestamp", timestamp, notification);
         DoubleValidator.notZero("latitude", latitude, notification);
         DoubleValidator.notZero("longitude", longitude, notification);
-        DoubleValidator.notZero("speed", speed, notification);
-        DoubleValidator.notZero("bearing", bearing, notification);
+        ObjectValidator.notNull("speed", speed, notification);
+        ObjectValidator.notNull("bearing", bearing, notification);
         DoubleValidator.notZero("altitude", altitude, notification);
         DoubleValidator.notZero("accuracy", accuracy, notification);
         DoubleValidator.notZero("battery", battery, notification);
