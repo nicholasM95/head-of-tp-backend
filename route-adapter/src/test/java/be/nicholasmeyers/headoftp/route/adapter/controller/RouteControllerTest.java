@@ -166,7 +166,7 @@ public class RouteControllerTest {
 
             verify(patchRouteUseCase)
                     .patchRoute(UUID.fromString("930f9c57-ffe7-4d10-a33d-9f3d728c1b08"), 30.5,
-                            LocalDateTime.of(2025, 5, 23, 12, 0), 45);
+                            LocalDateTime.of(2025, 5, 23, 14, 0), 45);
         }
     }
 
