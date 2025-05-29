@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/nicholasM95/head-of-tp-backend/compare/v1.0.1...v1.0.2) (2025-05-29)
+
+
+### Bug Fixes
+
+* save location with speed 0 or bearing 0 ([6bee3b0](https://github.com/nicholasM95/head-of-tp-backend/commit/6bee3b0dc81504c8023f298714aef1a35f9fc4c0))
+* set correct time in correct zone ([2e7b5a1](https://github.com/nicholasM95/head-of-tp-backend/commit/2e7b5a15c1a4057a876ec34a2173e59fb4de5b0e))
+
 ## [1.0.1](https://github.com/nicholasM95/head-of-tp-backend/compare/v1.0.0...v1.0.1) (2025-05-26)
 
 
