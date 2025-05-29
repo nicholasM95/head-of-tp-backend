@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class RouteController implements RouteApi {
 
     private static final String MIME_TYPE_XML = "application/xml";
     private static final String MIME_TYPE_XML_GPX = "application/gpx+xml";
+    private static final ZoneId ZONE_ID_BRUSSELS = ZoneId.of("Europe/Brussels");
     private static final RoutePointProjection BRUSSELS_CENTER = new RoutePointProjection(50.8467, 4.3499, 0.0);
 
     private final Tika tika = new Tika();
@@ -93,8 +95,10 @@ public class RouteController implements RouteApi {
 
     @Override
     public ResponseEntity<Void> patchRouteByRouteId(UUID routeId, PatchRouteRequestResource patchRouteRequestResource) {
-        patchRouteUseCase.patchRoute(routeId, patchRouteRequestResource.getEstimatedAverageSpeed(),
-                patchRouteRequestResource.getEstimatedStartTime().toLocalDateTime(), patchRouteRequestResource.getPauseInMinutes());
+        LocalDateTime estimatedStartTime = Optional.ofNullable(patchRouteRequestResource.getEstimatedStartTime())
+                .map(dateTime -> dateTime.atZoneSameInstant(ZONE_ID_BRUSSELS).toLocalDateTime())
+                .orElse(null);
+        patchRouteUseCase.patchRoute(routeId, patchRouteRequestResource.getEstimatedAverageSpeed(), estimatedStartTime, patchRouteRequestResource.getPauseInMinutes());
         return ResponseEntity.noContent().build();
     }
 
@@ -112,8 +116,6 @@ public class RouteController implements RouteApi {
     }
 
     private RouteResponseResource map(RouteProjection routeProjection) {
-        ZoneId zone = ZoneId.of("Europe/Brussels");
-
         return RouteResponseResource.builder()
                 .id(routeProjection.id())
                 .name(routeProjection.name())
@@ -121,13 +123,13 @@ public class RouteController implements RouteApi {
                 .estimatedAverageSpeed(routeProjection.estimatedAverageSpeed())
                 .distanceInMeters(routeProjection.distanceInMeters())
                 .durationInMinutes(routeProjection.durationInMinutes())
-                .estimatedStartTime(routeProjection.estimatedStartTime().atZone(zone).toOffsetDateTime())
-                .estimatedEndTime(routeProjection.estimatedEndTime().atZone(zone).toOffsetDateTime())
+                .estimatedStartTime(routeProjection.estimatedStartTime().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime())
+                .estimatedEndTime(routeProjection.estimatedEndTime().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime())
                 .pauseInMinutes(routeProjection.pauseInMinutes())
-                .startTime(Optional.ofNullable(routeProjection.startTime()).map(startTime -> startTime.atZone(zone).toOffsetDateTime()).orElse(null))
+                .startTime(Optional.ofNullable(routeProjection.startTime()).map(startTime -> startTime.atZone(ZONE_ID_BRUSSELS).toOffsetDateTime()).orElse(null))
                 .averageSpeed(routeProjection.averageSpeed())
-                .createDate(routeProjection.createDate().atZone(zone).toOffsetDateTime())
-                .lastModifiedDate(routeProjection.lastModifiedDate().atZone(zone).toOffsetDateTime())
+                .createDate(routeProjection.createDate().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime())
+                .lastModifiedDate(routeProjection.lastModifiedDate().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime())
                 .build();
     }
 
