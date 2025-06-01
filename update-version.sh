@@ -18,6 +18,9 @@ else
   git add device-adapter/pom.xml
   git add device-domain/pom.xml
   git add device-usecase/pom.xml
+  git add participant-adapter/pom.xml
+  git add participant-domain/pom.xml
+  git add participant-usecase/pom.xml
   git add route-adapter/pom.xml
   git add route-domain/pom.xml
   git add route-usecase/pom.xml

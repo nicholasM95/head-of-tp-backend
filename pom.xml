@@ -41,6 +41,9 @@
         <module>device-domain</module>
         <module>device-usecase</module>
         <module>device-adapter</module>
+        <module>participant-domain</module>
+        <module>participant-usecase</module>
+        <module>participant-adapter</module>
         <module>route-domain</module>
         <module>route-usecase</module>
         <module>route-adapter</module>

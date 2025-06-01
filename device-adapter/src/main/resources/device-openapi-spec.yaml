@@ -69,8 +69,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+    get:
+      tags:
+        - device
+      operationId: findAllDevices
+      summary: Find all devices
+      responses:
+        200:
+          description: return Devices successfully processed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceResponse'
 components:
   schemas:
+    DeviceResponse:
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          example: 72839
     ProblemDetailResponse:
       required:
         - title

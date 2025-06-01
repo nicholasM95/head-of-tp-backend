@@ -1,27 +1,36 @@
 package be.nicholasmeyers.headoftp.device.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
+import be.nicholasmeyers.headoftp.device.adapter.resource.DeviceResponseResource;
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
+import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = {"https://headoftp.com", "http://localhost:4200"})
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class DeviceLocationController implements DeviceApi {
+public class DeviceController implements DeviceApi {
 
+    private static final int MAX_ID_LENGTH = 20;
     private final CreateDeviceLocationUseCase  createDeviceLocationUseCase;
+    private final FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
 
     @Override
     public ResponseEntity<Void> createDeviceLocation(String id, String timestamp, String lat, String lon, String speed, String bearing,
                                                      String altitude, String accuracy, String batt) {
+
+        if (id != null && id.length() > MAX_ID_LENGTH) {
+            id = id.substring(0, MAX_ID_LENGTH);
+        }
         Long timestampLong = Optional.ofNullable(timestamp)
                 .map(Long::valueOf)
                 .orElse(null);
@@ -56,5 +65,10 @@ public class DeviceLocationController implements DeviceApi {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<List<DeviceResponseResource>> findAllDevices() {
+        return ResponseEntity.ok(findAllDeviceIdsUseCase.findAllDeviceIds().stream().map(DeviceResponseResource::new).toList());
     }
 }

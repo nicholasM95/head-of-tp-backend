@@ -102,6 +102,12 @@
 
         <dependency>
             <groupId>be.nicholasmeyers</groupId>
+            <artifactId>participant-adapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>be.nicholasmeyers</groupId>
             <artifactId>route-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>
