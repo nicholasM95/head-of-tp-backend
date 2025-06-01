@@ -73,6 +73,23 @@ paths:
       responses:
         204:
           description: Participant successfully patched
+    delete:
+      tags:
+        - participant
+      operationId: deleteParticipantById
+      summary: delete participant by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+            example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
+          required: true
+          description: participant id
+      responses:
+        204:
+          description: Participant successfully deleted
 components:
   schemas:
     CreateParticipantRequest:

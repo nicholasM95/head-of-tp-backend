@@ -4,6 +4,7 @@ import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.participant.domain.CreateParticipantRequest;
 import be.nicholasmeyers.headoftp.participant.projection.ParticipantProjection;
 import be.nicholasmeyers.headoftp.participant.usecase.CreateParticipantUseCase;
+import be.nicholasmeyers.headoftp.participant.usecase.DeleteParticipantUseCase;
 import be.nicholasmeyers.headoftp.participant.usecase.FindAllParticipantUseCase;
 import be.nicholasmeyers.headoftp.participant.usecase.PatchParticipantUseCase;
 import org.junit.jupiter.api.Nested;
@@ -32,6 +33,7 @@ import static org.springframework.test.json.JsonCompareMode.STRICT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,6 +52,9 @@ public class ParticipantControllerTest {
 
     @MockitoBean
     private PatchParticipantUseCase patchParticipantUseCase;
+
+    @MockitoBean
+    private DeleteParticipantUseCase deleteParticipantUseCase;
 
     @Nested
     class CreateParticipant {
@@ -174,6 +179,21 @@ public class ParticipantControllerTest {
 
             verify(patchParticipantUseCase)
                     .patchParticipant(UUID.fromString("ddd2121d-2cd6-4f0b-8604-cc6987cd6a9f"), "Nicholas Meyers", "23414", BIKE, BIKER);
+        }
+    }
+
+    @Nested
+    class DeleteParticipantById {
+        @Test
+        void givenId_whenDeleteParticipantById_thenParticipantDeleted() throws Exception {
+            // Given
+            UUID id = UUID.randomUUID();
+
+            // When & Then
+            mockMvc.perform(delete("/participant/{id}", id.toString()))
+                    .andExpect(status().isNoContent());
+
+            verify(deleteParticipantUseCase).deleteParticipant(id);
         }
     }
 }

@@ -32,4 +32,10 @@ public class ParticipantPersistenceFacade implements ParticipantRepository {
             participantJpaRepository.saveAndFlush(participantJpaEntity.get());
         }
     }
+
+    @Override
+    public void deleteParticipantById(UUID participantId) {
+        participantJpaRepository.deleteById(participantId);
+        participantJpaRepository.flush();
+    }
 }

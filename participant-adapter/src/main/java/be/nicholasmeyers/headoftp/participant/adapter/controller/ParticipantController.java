@@ -11,6 +11,7 @@ import be.nicholasmeyers.headoftp.participant.domain.ParticipantRole;
 import be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle;
 import be.nicholasmeyers.headoftp.participant.projection.ParticipantProjection;
 import be.nicholasmeyers.headoftp.participant.usecase.CreateParticipantUseCase;
+import be.nicholasmeyers.headoftp.participant.usecase.DeleteParticipantUseCase;
 import be.nicholasmeyers.headoftp.participant.usecase.FindAllParticipantUseCase;
 import be.nicholasmeyers.headoftp.participant.usecase.PatchParticipantUseCase;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class ParticipantController implements ParticipantApi {
     private final CreateParticipantUseCase createParticipantUseCase;
     private final FindAllParticipantUseCase findAllParticipantUseCase;
     private final PatchParticipantUseCase patchParticipantUseCase;
+    private final DeleteParticipantUseCase deleteParticipantUseCase;
 
     @Override
     public ResponseEntity<Void> createParticipant(CreateParticipantRequestResource createParticipantRequestResource) {
@@ -49,6 +51,12 @@ public class ParticipantController implements ParticipantApi {
             log.error(notification.getErrors().toString());
             return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteParticipantById(UUID id) {
+        deleteParticipantUseCase.deleteParticipant(id);
         return ResponseEntity.noContent().build();
     }
 

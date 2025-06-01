@@ -124,4 +124,23 @@ public class ParticipantPersistenceFacadeTest {
             assertThat(result.get("last_modified_date")).isNotNull();
         }
     }
+
+    @Sql(value = "participant.sql")
+    @Nested
+    class DeleteParticipantById {
+        @Test
+        void givenId_whenDeleteParticipantById_thenParticipantIsDeleted() {
+            // Given
+            UUID participantId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+
+            // When
+            participantPersistenceFacade.deleteParticipantById(participantId);
+
+            // Then
+            String sql = "SELECT COUNT(id) FROM participant WHERE id = '123e4567-e89b-12d3-a456-426614174000'";
+            Long result = jdbcTemplate.queryForObject(sql, Long.class);
+            assertThat(result).isNotNull();
+            assertThat(result).isEqualTo(0L);
+        }
+    }
 }

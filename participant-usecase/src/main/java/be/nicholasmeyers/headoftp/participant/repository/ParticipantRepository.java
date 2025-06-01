@@ -12,4 +12,6 @@ public interface ParticipantRepository {
     Optional<Participant> findParticipantById(UUID participantId);
 
     void updateParticipant(Participant participant);
+
+    void deleteParticipantById(UUID participantId);
 }
