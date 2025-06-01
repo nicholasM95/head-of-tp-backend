@@ -49,9 +49,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /participant/{id}:
+    patch:
+      tags:
+        - participant
+      operationId: patchParticipantById
+      summary: patch participant by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+            example: b47c9d1e-f70a-4bf4-9b5c-b192ba4cb9d1
+          required: true
+          description: participant id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchParticipantRequest'
+      responses:
+        204:
+          description: Participant successfully patched
 components:
   schemas:
     CreateParticipantRequest:
+      required:
+        - name
+        - vehicle
+        - role
+        - deviceId
+      properties:
+        name:
+          type: string
+          example: Nicholas
+        vehicle:
+          $ref: '#/components/schemas/VehicleType'
+        role:
+          $ref: '#/components/schemas/RoleType'
+        deviceId:
+          type: string
+          example: 67289
+    PatchParticipantRequest:
       required:
         - name
         - vehicle

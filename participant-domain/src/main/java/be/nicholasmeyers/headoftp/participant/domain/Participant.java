@@ -3,13 +3,25 @@ package be.nicholasmeyers.headoftp.participant.domain;
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.common.domain.validation.ObjectValidator;
 import be.nicholasmeyers.headoftp.common.domain.validation.StringValidator;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.UUID;
+
+@AllArgsConstructor
+@Builder
 @Getter
 public class Participant {
+    private UUID id;
+    @Setter
     private String name;
+    @Setter
     private ParticipantVehicle vehicle;
+    @Setter
     private ParticipantRole role;
+    @Setter
     private String deviceId;
 
     protected Participant(CreateParticipantRequest createParticipantRequest) {

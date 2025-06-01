@@ -38,11 +38,11 @@ public class ParticipantJpaEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "vehicle", nullable = false, updatable = false)
+    @Column(name = "vehicle", nullable = false)
     private ParticipantVehicle vehicle;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, updatable = false)
+    @Column(name = "role", nullable = false)
     private ParticipantRole role;
 
     @CreatedDate
@@ -55,6 +55,23 @@ public class ParticipantJpaEntity {
 
     public ParticipantJpaEntity(Participant participant) {
         this.id = UUID.randomUUID();
+        this.deviceId = participant.getDeviceId();
+        this.name = participant.getName();
+        this.vehicle = participant.getVehicle();
+        this.role = participant.getRole();
+    }
+
+    public Participant toDomainObject() {
+        return Participant.builder()
+                .id(id)
+                .name(name)
+                .vehicle(vehicle)
+                .role(role)
+                .deviceId(deviceId)
+                .build();
+    }
+
+    public void updateFromDomain(Participant participant) {
         this.deviceId = participant.getDeviceId();
         this.name = participant.getName();
         this.vehicle = participant.getVehicle();

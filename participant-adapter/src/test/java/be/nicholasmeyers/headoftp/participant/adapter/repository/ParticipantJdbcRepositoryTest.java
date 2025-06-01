@@ -31,7 +31,7 @@ public class ParticipantJdbcRepositoryTest {
 
             // Then
             assertThat(participants).containsExactly(new ParticipantProjection(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
-                    "Nicholas Meyers", "8923", CAR, TP, LocalDateTime.of(2025, 6, 1, 12, 0),
+                    "Nicholas Meyers", "DEV1234567890", CAR, TP, LocalDateTime.of(2025, 6, 1, 12, 0),
                     LocalDateTime.of(2025, 6, 1, 12, 0)));
         }
     }

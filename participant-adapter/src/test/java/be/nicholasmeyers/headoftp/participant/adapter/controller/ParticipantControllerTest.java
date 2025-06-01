@@ -5,6 +5,7 @@ import be.nicholasmeyers.headoftp.participant.domain.CreateParticipantRequest;
 import be.nicholasmeyers.headoftp.participant.projection.ParticipantProjection;
 import be.nicholasmeyers.headoftp.participant.usecase.CreateParticipantUseCase;
 import be.nicholasmeyers.headoftp.participant.usecase.FindAllParticipantUseCase;
+import be.nicholasmeyers.headoftp.participant.usecase.PatchParticipantUseCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.json.JsonCompareMode.STRICT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,6 +47,9 @@ public class ParticipantControllerTest {
 
     @MockitoBean
     private FindAllParticipantUseCase findAllParticipantUseCase;
+
+    @MockitoBean
+    private PatchParticipantUseCase patchParticipantUseCase;
 
     @Nested
     class CreateParticipant {
@@ -144,6 +149,31 @@ public class ParticipantControllerTest {
             mockMvc.perform(get("/participant"))
                     .andExpect(status().isOk())
                     .andExpect(content().json(expectedResponse, STRICT));
+        }
+    }
+
+    @Nested
+    class PatchParticipantById {
+        @Test
+        void givenPatchParticipantRequest_whenPatchParticipantById_thenParticipantPatched() throws Exception {
+            // Given
+            String requestBody = """
+                    {
+                        "name": "Nicholas Meyers",
+                        "vehicle": "BIKE",
+                        "role": "BIKER",
+                        "deviceId": "23414"
+                    }
+                    """;
+
+            // When & Then
+            mockMvc.perform(patch("/participant/{id}", "ddd2121d-2cd6-4f0b-8604-cc6987cd6a9f")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(status().isNoContent());
+
+            verify(patchParticipantUseCase)
+                    .patchParticipant(UUID.fromString("ddd2121d-2cd6-4f0b-8604-cc6987cd6a9f"), "Nicholas Meyers", "23414", BIKE, BIKER);
         }
     }
 }

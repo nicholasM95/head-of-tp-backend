@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"https://headoftp.com", "http://localhost:4200"})
+@CrossOrigin(origins = {"https://headoftp.com", "http://localhost:5173"})
 @RestController
 @RequiredArgsConstructor
 @Slf4j

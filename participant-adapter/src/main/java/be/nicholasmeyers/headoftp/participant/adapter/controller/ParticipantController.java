@@ -3,6 +3,7 @@ package be.nicholasmeyers.headoftp.participant.adapter.controller;
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.participant.adapter.resource.CreateParticipantRequestResource;
 import be.nicholasmeyers.headoftp.participant.adapter.resource.ParticipantResponseResource;
+import be.nicholasmeyers.headoftp.participant.adapter.resource.PatchParticipantRequestResource;
 import be.nicholasmeyers.headoftp.participant.adapter.resource.RoleTypeResource;
 import be.nicholasmeyers.headoftp.participant.adapter.resource.VehicleTypeResource;
 import be.nicholasmeyers.headoftp.participant.domain.CreateParticipantRequest;
@@ -11,6 +12,7 @@ import be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle;
 import be.nicholasmeyers.headoftp.participant.projection.ParticipantProjection;
 import be.nicholasmeyers.headoftp.participant.usecase.CreateParticipantUseCase;
 import be.nicholasmeyers.headoftp.participant.usecase.FindAllParticipantUseCase;
+import be.nicholasmeyers.headoftp.participant.usecase.PatchParticipantUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
-@CrossOrigin(origins = {"https://headoftp.com", "http://localhost:4200"})
+@CrossOrigin(origins = {"https://headoftp.com", "http://localhost:5173"})
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -30,6 +33,7 @@ public class ParticipantController implements ParticipantApi {
 
     private final CreateParticipantUseCase createParticipantUseCase;
     private final FindAllParticipantUseCase findAllParticipantUseCase;
+    private final PatchParticipantUseCase patchParticipantUseCase;
 
     @Override
     public ResponseEntity<Void> createParticipant(CreateParticipantRequestResource createParticipantRequestResource) {
@@ -51,6 +55,14 @@ public class ParticipantController implements ParticipantApi {
     @Override
     public ResponseEntity<List<ParticipantResponseResource>> findAllParticipants() {
         return ResponseEntity.ok(findAllParticipantUseCase.findAllParticipants().stream().map(this::map).toList());
+    }
+
+    @Override
+    public ResponseEntity<Void> patchParticipantById(UUID id, PatchParticipantRequestResource patchParticipantRequestResource) {
+        patchParticipantUseCase.patchParticipant(id, patchParticipantRequestResource.getName(), patchParticipantRequestResource.getDeviceId(),
+                ParticipantVehicle.valueOf(patchParticipantRequestResource.getVehicle().name()),
+                ParticipantRole.valueOf(patchParticipantRequestResource.getRole().name()));
+        return ResponseEntity.noContent().build();
     }
 
     private ParticipantResponseResource map(ParticipantProjection participantProjection) {
