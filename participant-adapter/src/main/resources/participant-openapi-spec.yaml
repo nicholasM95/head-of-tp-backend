@@ -29,6 +29,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+    get:
+      tags:
+        - participant
+      operationId: findAllParticipants
+      summary: Find all participants
+      responses:
+        200:
+          description: Participants successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParticipantResponse'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
     CreateParticipantRequest:
@@ -48,6 +68,36 @@ components:
         deviceId:
           type: string
           example: 67289
+    ParticipantResponse:
+      required:
+        - id
+        - deviceId
+        - name
+        - vehicle
+        - role
+        - createDate
+        - lastModifiedDate
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 7f6986e4-7909-49ad-a498-c08333abd012
+        deviceId:
+          type: string
+          example: 242234
+        name:
+          type: string
+          example: Nicholas Meyers
+        vehicle:
+          $ref: '#/components/schemas/VehicleType'
+        role:
+          $ref: '#/components/schemas/RoleType'
+        createDate:
+          type: string
+          format: date-time
+        lastModifiedDate:
+          type: string
+          format: date-time
     VehicleType:
       type: string
       enum:

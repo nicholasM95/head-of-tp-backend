@@ -2,7 +2,9 @@ package be.nicholasmeyers.headoftp.participant.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.participant.domain.CreateParticipantRequest;
+import be.nicholasmeyers.headoftp.participant.projection.ParticipantProjection;
 import be.nicholasmeyers.headoftp.participant.usecase.CreateParticipantUseCase;
+import be.nicholasmeyers.headoftp.participant.usecase.FindAllParticipantUseCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,13 +15,22 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.BIKER;
+import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.TP;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.BIKE;
+import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.CAR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.json.JsonCompareMode.STRICT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ParticipantController.class)
@@ -31,6 +42,9 @@ public class ParticipantControllerTest {
 
     @MockitoBean
     private CreateParticipantUseCase createParticipantUseCase;
+
+    @MockitoBean
+    private FindAllParticipantUseCase findAllParticipantUseCase;
 
     @Nested
     class CreateParticipant {
@@ -97,4 +111,39 @@ public class ParticipantControllerTest {
         }
     }
 
+    @Nested
+    class FindAllParticipants {
+        @Test
+        void given_whenFindAllParticipants_thenReturnParticipants() throws Exception {
+            // Given
+
+            when(findAllParticipantUseCase.findAllParticipants())
+                    .thenReturn(List.of(new ParticipantProjection(UUID.fromString("bec6a70a-402c-4957-b47f-fa49abbfd416"),
+                            "Nicholas Meyers",
+                            "678294",
+                            CAR,
+                            TP,
+                            LocalDateTime.of(2025, 5, 1, 12, 30),
+                            LocalDateTime.of(2025, 5, 1, 12, 30))));
+
+            // When & Then
+            String expectedResponse = """
+                    [
+                      {
+                        "id": "bec6a70a-402c-4957-b47f-fa49abbfd416",
+                        "name": "Nicholas Meyers",
+                        "deviceId": "678294",
+                        "vehicle": "CAR",
+                        "role": "TP",
+                        "createDate": "2025-05-01T12:30:00+02:00",
+                        "lastModifiedDate": "2025-05-01T12:30:00+02:00"
+                      }
+                    ]
+                    """;
+
+            mockMvc.perform(get("/participant"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(expectedResponse, STRICT));
+        }
+    }
 }

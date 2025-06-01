@@ -118,7 +118,7 @@
                             <configOptions>
                                 <!-- Generate API files based on tags -->
                                 <interfaceOnly>true</interfaceOnly>
-                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <dateLibrary>java8</dateLibrary>
                                 <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
                                 <requestMappingMode>none</requestMappingMode>
                                 <skipDefaultInterface>true</skipDefaultInterface>
