@@ -164,7 +164,7 @@ components:
     RoleType:
       type: string
       enum:
-        - BIKER
+        - RIDER
         - TP
     ProblemDetailResponse:
       required:

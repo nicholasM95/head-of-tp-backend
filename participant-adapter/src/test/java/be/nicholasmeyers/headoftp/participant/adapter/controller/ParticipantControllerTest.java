@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.BIKER;
+import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.RIDER;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.TP;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.BIKE;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.CAR;
@@ -65,7 +65,7 @@ public class ParticipantControllerTest {
                     {
                         "name": "Nicholas Meyers",
                         "vehicle": "BIKE",
-                        "role": "BIKER",
+                        "role": "RIDER",
                         "deviceId": "542"
                     }
                     """;
@@ -85,7 +85,7 @@ public class ParticipantControllerTest {
             CreateParticipantRequest createParticipantRequest = captor.getValue();
             assertThat(createParticipantRequest.name()).isEqualTo("Nicholas Meyers");
             assertThat(createParticipantRequest.vehicle()).isEqualTo(BIKE);
-            assertThat(createParticipantRequest.role()).isEqualTo(BIKER);
+            assertThat(createParticipantRequest.role()).isEqualTo(RIDER);
             assertThat(createParticipantRequest.deviceId()).isEqualTo("542");
         }
 
@@ -96,7 +96,7 @@ public class ParticipantControllerTest {
                     {
                         "name": "Nicholas Meyers",
                         "vehicle": "BIKE",
-                        "role": "BIKER",
+                        "role": "RIDER",
                         "deviceId": "invalid"
                     }
                     """;
@@ -116,7 +116,7 @@ public class ParticipantControllerTest {
             CreateParticipantRequest createParticipantRequest = captor.getValue();
             assertThat(createParticipantRequest.name()).isEqualTo("Nicholas Meyers");
             assertThat(createParticipantRequest.vehicle()).isEqualTo(BIKE);
-            assertThat(createParticipantRequest.role()).isEqualTo(BIKER);
+            assertThat(createParticipantRequest.role()).isEqualTo(RIDER);
             assertThat(createParticipantRequest.deviceId()).isEqualTo("invalid");
         }
     }
@@ -166,7 +166,7 @@ public class ParticipantControllerTest {
                     {
                         "name": "Nicholas Meyers",
                         "vehicle": "BIKE",
-                        "role": "BIKER",
+                        "role": "RIDER",
                         "deviceId": "23414"
                     }
                     """;
@@ -178,7 +178,7 @@ public class ParticipantControllerTest {
                     .andExpect(status().isNoContent());
 
             verify(patchParticipantUseCase)
-                    .patchParticipant(UUID.fromString("ddd2121d-2cd6-4f0b-8604-cc6987cd6a9f"), "Nicholas Meyers", "23414", BIKE, BIKER);
+                    .patchParticipant(UUID.fromString("ddd2121d-2cd6-4f0b-8604-cc6987cd6a9f"), "Nicholas Meyers", "23414", BIKE, RIDER);
         }
     }
 

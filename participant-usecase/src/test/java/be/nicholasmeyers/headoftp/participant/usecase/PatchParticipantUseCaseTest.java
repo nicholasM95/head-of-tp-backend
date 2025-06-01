@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.BIKER;
+import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.RIDER;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.TP;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.BIKE;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.CAR;
@@ -47,7 +47,7 @@ public class PatchParticipantUseCaseTest {
             ParticipantVehicle vehicle = CAR;
             ParticipantRole role = TP;
 
-            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, BIKER, "111");
+            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, RIDER, "111");
             Participant participant = ParticipantFactory.createParticipant(createParticipantRequest).getValue();
             when(participantRepository.findParticipantById(any(UUID.class)))
                     .thenReturn(Optional.of(participant));
@@ -74,7 +74,7 @@ public class PatchParticipantUseCaseTest {
             String deviceId = "8913";
             ParticipantVehicle vehicle = CAR;
 
-            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, BIKER, "111");
+            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, RIDER, "111");
             Participant participant = ParticipantFactory.createParticipant(createParticipantRequest).getValue();
             when(participantRepository.findParticipantById(any(UUID.class)))
                     .thenReturn(Optional.of(participant));
@@ -90,7 +90,7 @@ public class PatchParticipantUseCaseTest {
             assertThat(participantCaptor.getValue().getName()).isEqualTo("Nicholas Meyers");
             assertThat(participantCaptor.getValue().getDeviceId()).isEqualTo("8913");
             assertThat(participantCaptor.getValue().getVehicle()).isEqualTo(CAR);
-            assertThat(participantCaptor.getValue().getRole()).isEqualTo(BIKER);
+            assertThat(participantCaptor.getValue().getRole()).isEqualTo(RIDER);
         }
 
         @Test
@@ -100,7 +100,7 @@ public class PatchParticipantUseCaseTest {
             String name = "Nicholas Meyers";
             String deviceId = "8913";
 
-            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, BIKER, "111");
+            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, RIDER, "111");
             Participant participant = ParticipantFactory.createParticipant(createParticipantRequest).getValue();
             when(participantRepository.findParticipantById(any(UUID.class)))
                     .thenReturn(Optional.of(participant));
@@ -116,7 +116,7 @@ public class PatchParticipantUseCaseTest {
             assertThat(participantCaptor.getValue().getName()).isEqualTo("Nicholas Meyers");
             assertThat(participantCaptor.getValue().getDeviceId()).isEqualTo("8913");
             assertThat(participantCaptor.getValue().getVehicle()).isEqualTo(BIKE);
-            assertThat(participantCaptor.getValue().getRole()).isEqualTo(BIKER);
+            assertThat(participantCaptor.getValue().getRole()).isEqualTo(RIDER);
         }
 
         @Test
@@ -125,7 +125,7 @@ public class PatchParticipantUseCaseTest {
             UUID participantId = UUID.fromString("74eda9fe-9d6b-4f9e-9c9a-3d6918a63065");
             String name = "Nicholas Meyers";
 
-            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, BIKER, "111");
+            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, RIDER, "111");
             Participant participant = ParticipantFactory.createParticipant(createParticipantRequest).getValue();
             when(participantRepository.findParticipantById(any(UUID.class)))
                     .thenReturn(Optional.of(participant));
@@ -141,7 +141,7 @@ public class PatchParticipantUseCaseTest {
             assertThat(participantCaptor.getValue().getName()).isEqualTo("Nicholas Meyers");
             assertThat(participantCaptor.getValue().getDeviceId()).isEqualTo("111");
             assertThat(participantCaptor.getValue().getVehicle()).isEqualTo(BIKE);
-            assertThat(participantCaptor.getValue().getRole()).isEqualTo(BIKER);
+            assertThat(participantCaptor.getValue().getRole()).isEqualTo(RIDER);
         }
 
         @Test
@@ -150,7 +150,7 @@ public class PatchParticipantUseCaseTest {
             UUID participantId = UUID.fromString("74eda9fe-9d6b-4f9e-9c9a-3d6918a63065");
             String name = "Nicholas Meyers";
 
-            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, BIKER, "111");
+            CreateParticipantRequest createParticipantRequest = new CreateParticipantRequest("Jos", BIKE, RIDER, "111");
             Participant participant = ParticipantFactory.createParticipant(createParticipantRequest).getValue();
             when(participantRepository.findParticipantById(any(UUID.class)))
                     .thenReturn(Optional.of(participant));

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.BIKER;
+import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.RIDER;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantRole.TP;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.BIKE;
 import static be.nicholasmeyers.headoftp.participant.domain.ParticipantVehicle.CAR;
@@ -102,7 +102,7 @@ public class ParticipantPersistenceFacadeTest {
             participant.get().setName("Mieke Muis");
             participant.get().setDeviceId("999");
             participant.get().setVehicle(BIKE);
-            participant.get().setRole(BIKER);
+            participant.get().setRole(RIDER);
 
             // When
             participantPersistenceFacade.updateParticipant(participant.get());
@@ -119,7 +119,7 @@ public class ParticipantPersistenceFacadeTest {
             assertThat(result.get("device_id")).isEqualTo("999");
             assertThat(result.get("name")).isEqualTo("Mieke Muis");
             assertThat(result.get("vehicle")).isEqualTo("BIKE");
-            assertThat(result.get("role")).isEqualTo("BIKER");
+            assertThat(result.get("role")).isEqualTo("RIDER");
             assertThat(result.get("created_date")).isNotNull();
             assertThat(result.get("last_modified_date")).isNotNull();
         }
