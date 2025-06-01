@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-distance_from_start_in_meter-column-to-route_point
+      author: nicholasmeyers
+      changes:
+        - addColumn:
+            tableName: route_point
+            columns:
+              - column:
+                  name: distance_from_start_in_meter
+                  type: integer
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_route_point_routeid_distance
+            tableName: route_point
+            columns:
+              - column:
+                  name: route_id
+              - column:
+                  name: distance_from_start_in_meter

@@ -28,8 +28,8 @@ public class RoutePersistenceFacade implements RouteRepository {
         RouteJpaEntity routeJpaEntity = new RouteJpaEntity(route);
         routeJpaRepository.saveAndFlush(routeJpaEntity);
 
-        route.getPoints().forEach(routePoints -> {
-            RoutePointJpaEntity routePointJpaEntity = new RoutePointJpaEntity(routeJpaEntity.getId(), routePoints);
+        route.getPoints().forEach(routePoint -> {
+            RoutePointJpaEntity routePointJpaEntity = new RoutePointJpaEntity(routeJpaEntity.getId(), routePoint);
             routePointJpaRepository.save(routePointJpaEntity);
         });
 

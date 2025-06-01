@@ -3,12 +3,15 @@ package be.nicholasmeyers.headoftp.route.domain;
 import be.nicholasmeyers.headoftp.common.domain.validation.DoubleValidator;
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class RoutePoint {
     private final Double latitude;
     private final Double longitude;
     private final Double altitude;
+    @Setter
+    private Integer distanceFromStartInMeter;
 
     protected RoutePoint(CreateRoutePointRequest createRoutePointRequest) {
         this.latitude = createRoutePointRequest.latitude();
