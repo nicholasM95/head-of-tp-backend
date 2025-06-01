@@ -4,9 +4,11 @@ import be.nicholasmeyers.headoftp.device.domain.DeviceLocation;
 import be.nicholasmeyers.headoftp.device.repository.DeviceLocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional
 public class DeviceLocationPersistenceFacade implements DeviceLocationRepository {
 
     private final DeviceLocationJpaRepository deviceLocationJpaRepository;
