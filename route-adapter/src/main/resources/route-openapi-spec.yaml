@@ -63,7 +63,7 @@ paths:
             format: uuid
             example: b47c9d1e-f70a-4bf4-9b5c-b192ba4cb9d1
           required: true
-          description: route id
+          description: Unique identifier of the route
       requestBody:
         required: true
         content:
@@ -86,10 +86,37 @@ paths:
             format: uuid
             example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
           required: true
-          description: route id
+          description: Unique identifier of the route
       responses:
         204:
           description: Route successfully deleted
+  /route/{id}/navigate:
+    get:
+      tags:
+        - route
+      operationId: redirectToNavigation
+      summary: redirectToNavigation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique identifier of the route
+        - in: query
+          name: meters
+          schema:
+            type: integer
+            format: int32
+            example: 40000
+          required: true
+          description: meter on route
+      responses:
+        '302':
+          description: Redirect to route
+        '404':
+          description: Route not found.
   /route-point/{routeId}:
     get:
       tags:
@@ -104,7 +131,7 @@ paths:
             format: uuid
             example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
           required: true
-          description: route id
+          description: Unique identifier of the route
       responses:
         200:
           description: Route points successfully retrieved
@@ -128,7 +155,7 @@ paths:
             format: uuid
             example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
           required: true
-          description: route id
+          description: Unique identifier of the route
       responses:
         200:
           description: Route point center successfully retrieved

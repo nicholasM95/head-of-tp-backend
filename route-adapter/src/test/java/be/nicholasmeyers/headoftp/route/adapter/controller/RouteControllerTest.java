@@ -9,6 +9,7 @@ import be.nicholasmeyers.headoftp.route.usecase.DeleteRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutePointsByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutesUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindRoutePointCenterByRouteIdUseCase;
+import be.nicholasmeyers.headoftp.route.usecase.NavigateToMetersOnRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.PatchRouteUseCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import static be.nicholasmeyers.headoftp.route.projection.RouteProjectionMother.
 import static be.nicholasmeyers.headoftp.route.projection.RouteProjectionMother.createRouteProjection2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,6 +45,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RouteController.class)
@@ -69,6 +72,9 @@ public class RouteControllerTest {
 
     @MockitoBean
     private FindRoutePointCenterByRouteIdUseCase findRoutePointCenterByRouteIdUseCase;
+
+    @MockitoBean
+    private NavigateToMetersOnRouteUseCase navigateToMetersOnRouteUseCase;
 
     @Nested
     class CreateRoute {
@@ -308,6 +314,44 @@ public class RouteControllerTest {
                     .andExpect(content().json(expectedResponse, STRICT));
 
             verify(findRoutePointCenterByRouteIdUseCase).findRoutePointCenterByRouteId(UUID.fromString("03d3c4ee-cb56-44f8-935b-d360a0432e85"));
+        }
+    }
+
+    @Nested
+    class RedirectToNavigation {
+        @Test
+        void givenRouteIdAndMeters_whenRedirectToNavigation_thenReturnRedirectWithLocation() throws Exception {
+            // Given
+            UUID routeId = UUID.randomUUID();
+            int meters = 50000;
+
+            when(navigateToMetersOnRouteUseCase.navigateToMetersOnRoute(any(UUID.class), anyInt()))
+                    .thenReturn(Optional.of("http://test.test"));
+
+            // When & Then
+            mockMvc.perform(get("/route/{id}/navigate", routeId)
+                            .queryParam("meters", Integer.toString(meters)))
+                    .andExpect(status().is(302))
+                    .andExpect(header().stringValues("Location", "http://test.test"));
+
+            verify(navigateToMetersOnRouteUseCase).navigateToMetersOnRoute(routeId, meters);
+        }
+
+        @Test
+        void givenRouteIdAndMeters_whenRedirectToNavigation_thenReturnNotFound() throws Exception {
+            // Given
+            UUID routeId = UUID.randomUUID();
+            int meters = 50000;
+
+            when(navigateToMetersOnRouteUseCase.navigateToMetersOnRoute(any(UUID.class), anyInt()))
+                    .thenReturn(Optional.empty());
+
+            // When & Then
+            mockMvc.perform(get("/route/{id}/navigate", routeId)
+                            .queryParam("meters", Integer.toString(meters)))
+                    .andExpect(status().is(404));
+
+            verify(navigateToMetersOnRouteUseCase).navigateToMetersOnRoute(routeId, meters);
         }
     }
 }

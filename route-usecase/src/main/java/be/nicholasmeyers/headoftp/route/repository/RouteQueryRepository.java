@@ -9,4 +9,5 @@ public interface RouteQueryRepository {
     List<RouteProjection> findAllRoutes();
 
     List<RouteProjection> findAllActiveRoutes();
+
 }

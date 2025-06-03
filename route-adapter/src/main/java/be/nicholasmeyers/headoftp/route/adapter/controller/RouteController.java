@@ -12,6 +12,7 @@ import be.nicholasmeyers.headoftp.route.usecase.DeleteRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutePointsByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutesUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindRoutePointCenterByRouteIdUseCase;
+import be.nicholasmeyers.headoftp.route.usecase.NavigateToMetersOnRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.PatchRouteUseCase;
 import io.jenetics.jpx.GPX;
 import io.jenetics.jpx.Metadata;
@@ -22,12 +23,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -53,6 +57,7 @@ public class RouteController implements RouteApi {
     private final FindAllRoutesUseCase findAllRoutesUseCase;
     private final FindAllRoutePointsByRouteIdUseCase findAllRoutePointsByRouteIdUseCase;
     private final FindRoutePointCenterByRouteIdUseCase findRoutePointCenterByRouteIdUseCase;
+    private final NavigateToMetersOnRouteUseCase navigateToMetersOnRouteUseCase;
 
     @Override
     public ResponseEntity<Void> createRoute(Resource body) {
@@ -100,6 +105,17 @@ public class RouteController implements RouteApi {
                 .orElse(null);
         patchRouteUseCase.patchRoute(routeId, patchRouteRequestResource.getEstimatedAverageSpeed(), estimatedStartTime, patchRouteRequestResource.getPauseInMinutes());
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> redirectToNavigation(UUID id, Integer meters) {
+        Optional<String> url = navigateToMetersOnRouteUseCase.navigateToMetersOnRoute(id, meters);
+        if (url.isPresent()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create(url.get()));
+            return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
+        }
+        return new ResponseEntity<>(HttpStatus.valueOf(404));
     }
 
     @Override
