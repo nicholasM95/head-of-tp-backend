@@ -43,11 +43,14 @@ public class NavigateToTpOnRouteUseCase {
                 for (int i = currentLocationBike.distanceFromStartInMeter() + KILOMETER_IN_METER; i < routeDistanceInMeter; i = i + KILOMETER_IN_METER) {
                     Optional<RoutePointProjection> possibleMeetingPoint = routePointQueryRepository.findRoutePointByRouteIdAndMetersOnRoute(routeId, i);
                     if (possibleMeetingPoint.isPresent()) {
+                        log.info("Possible meeting point LAT: {} LONG: {}", possibleMeetingPoint.get().latitude(), possibleMeetingPoint.get().longitude());
                         Integer durationInSecondsForCar = routePlannerGateway.calculateDuration(currentLocationCar.get(), possibleMeetingPoint.get());
                         Integer durationInSecondsForBike = calculateTimeToPoint(routePoints, route.estimatedAverageSpeed(), currentLocationBike, possibleMeetingPoint.get());
 
+                        log.info("Duration in seconds, Bike: {}, Car: {}", durationInSecondsForBike, durationInSecondsForCar);
+
                         if (durationInSecondsForCar + FIVE_MINUTES < durationInSecondsForBike) {
-                            log.info("Meeting point founded");
+                            log.info("Meeting point founded LAT: {} LONG: {}", possibleMeetingPoint.get().latitude(), possibleMeetingPoint.get().longitude());
                             return possibleMeetingPoint.map(routePointProjection -> GOOGLE_MAPS_URL
                                     .replace("LAT", routePointProjection.latitude().toString())
                                     .replace("LNG", routePointProjection.longitude().toString()));
