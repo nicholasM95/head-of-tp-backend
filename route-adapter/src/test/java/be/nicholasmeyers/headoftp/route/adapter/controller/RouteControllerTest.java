@@ -10,6 +10,7 @@ import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutePointsByRouteIdUseCa
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutesUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindRoutePointCenterByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.NavigateToMetersOnRouteUseCase;
+import be.nicholasmeyers.headoftp.route.usecase.NavigateToTpOnRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.PatchRouteUseCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,9 @@ public class RouteControllerTest {
 
     @MockitoBean
     private NavigateToMetersOnRouteUseCase navigateToMetersOnRouteUseCase;
+
+    @MockitoBean
+    private NavigateToTpOnRouteUseCase navigateToTpOnRouteUseCase;
 
     @Nested
     class CreateRoute {
@@ -236,8 +240,8 @@ public class RouteControllerTest {
         @Test
         void givenRoutePoints_whenGetRoutePointByRouteId_thenReturnRoutePoints() throws Exception {
             // Given
-            RoutePointProjection routePointProjection1 = new RoutePointProjection(54.5, 90.1, 12.2);
-            RoutePointProjection routePointProjection2 = new RoutePointProjection(54.6, 91.6, 12.7);
+            RoutePointProjection routePointProjection1 = new RoutePointProjection(54.5, 90.1, 12.2, 12);
+            RoutePointProjection routePointProjection2 = new RoutePointProjection(54.6, 91.6, 12.7, 13);
 
             when(findAllRoutePointsByRouteIdUseCase.findAllRoutePointsByRouteId(any(UUID.class)))
                     .thenReturn(List.of(routePointProjection1, routePointProjection2));
@@ -271,7 +275,7 @@ public class RouteControllerTest {
     class GetRoutePointCenterByRouteId {
         @Test
         void givenRoutePoint_whenGetRoutePointCenterByRouteId_thenReturnRoutePoint() throws Exception {
-            RoutePointProjection routePointProjection = new RoutePointProjection(54.6, 91.6, 12.3);
+            RoutePointProjection routePointProjection = new RoutePointProjection(54.6, 91.6, 12.3, 40);
 
             when(findRoutePointCenterByRouteIdUseCase.findRoutePointCenterByRouteId(any(UUID.class)))
                     .thenReturn(Optional.of(routePointProjection));
@@ -352,6 +356,41 @@ public class RouteControllerTest {
                     .andExpect(status().is(404));
 
             verify(navigateToMetersOnRouteUseCase).navigateToMetersOnRoute(routeId, meters);
+        }
+
+        @Test
+        void givenRouteIdAndTp_whenRedirectToNavigation_thenReturnRedirectWithLocation() throws Exception {
+            // Given
+            UUID routeId = UUID.randomUUID();
+            UUID tp = UUID.randomUUID();
+
+            when(navigateToTpOnRouteUseCase.navigateToTpOnRoute(any(UUID.class), any(UUID.class)))
+                    .thenReturn(Optional.of("http://test.test"));
+
+            // When & Then
+            mockMvc.perform(get("/route/{id}/navigate", routeId)
+                            .queryParam("tp", tp.toString()))
+                    .andExpect(status().is(302))
+                    .andExpect(header().stringValues("Location", "http://test.test"));
+
+            verify(navigateToTpOnRouteUseCase).navigateToTpOnRoute(routeId, tp);
+        }
+
+        @Test
+        void givenRouteIdAndTp_whenRedirectToNavigation_thenReturnNotFound() throws Exception {
+            // Given
+            UUID routeId = UUID.randomUUID();
+            UUID tp = UUID.randomUUID();
+
+            when(navigateToTpOnRouteUseCase.navigateToTpOnRoute(any(UUID.class), any(UUID.class)))
+                    .thenReturn(Optional.empty());
+
+            // When & Then
+            mockMvc.perform(get("/route/{id}/navigate", routeId)
+                            .queryParam("tp", tp.toString()))
+                    .andExpect(status().is(404));
+
+            verify(navigateToTpOnRouteUseCase).navigateToTpOnRoute(routeId, tp);
         }
     }
 }

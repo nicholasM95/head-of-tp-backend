@@ -21,6 +21,18 @@ public class RouteJdbcRepository implements RouteQueryRepository {
     private final NamedParameterJdbcTemplate template;
 
     @Override
+    public Optional<RouteProjection> findById(UUID id) {
+        String query = """
+                SELECT id, route_name, elevation_gain, estimated_average_speed, distance_in_meters, duration_in_minutes,
+                       estimated_start_time, estimated_end_time, pause_in_minutes, start_time, average_speed, created_date, last_modified_date
+                FROM route
+                WHERE id = :id
+                """;
+
+        return template.query(query, Map.of("id", id), this::map).stream().findFirst();
+    }
+
+    @Override
     public List<RouteProjection> findAllRoutes() {
         String query = """
                 SELECT id, route_name, elevation_gain, estimated_average_speed, distance_in_meters, duration_in_minutes,

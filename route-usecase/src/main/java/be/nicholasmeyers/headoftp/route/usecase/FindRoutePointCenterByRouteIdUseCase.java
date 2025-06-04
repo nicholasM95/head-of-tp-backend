@@ -31,6 +31,6 @@ public class FindRoutePointCenterByRouteIdUseCase {
 
         double avgLat = sumLat / routePoints.size();
         double avgLon = sumLon / routePoints.size();
-        return Optional.of(new RoutePointProjection(avgLat, avgLon, 0.0));
+        return Optional.of(new RoutePointProjection(avgLat, avgLon, 0.0, 0));
     }
 }

@@ -11,4 +11,6 @@ public interface RoutePointQueryRepository {
     List<RoutePointProjection> findAllRoutePointsByRouteId(UUID routeId);
 
     Optional<RoutePointProjection> findRoutePointByRouteIdAndMetersOnRoute(UUID routeId, Integer metersOnRoute);
+
+    Optional<RoutePointProjection> findLastRoutePointByParticipantId(UUID participantId);
 }

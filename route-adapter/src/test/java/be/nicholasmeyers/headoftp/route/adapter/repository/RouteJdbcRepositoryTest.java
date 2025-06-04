@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static be.nicholasmeyers.headoftp.route.projection.RouteProjectionMother.createRouteProjection1;
 import static be.nicholasmeyers.headoftp.route.projection.RouteProjectionMother.createRouteProjection3;
@@ -18,6 +20,34 @@ public class RouteJdbcRepositoryTest {
 
     @Autowired
     private RouteJdbcRepository routeJdbcRepository;
+
+    @Sql(value = "route.sql")
+    @Nested
+    class FindById {
+        @Test
+        void givenId_whenFindById_thenReturnRoute() {
+            // Given
+            UUID id = UUID.fromString("e0483c47-0aa0-442d-808b-8897687f4af2");
+
+            // When
+            Optional<RouteProjection> routeProjection = routeJdbcRepository.findById(id);
+
+            // Then
+            assertThat(routeProjection).contains(createRouteProjection1());
+        }
+
+        @Test
+        void givenId_whenFindById_thenReturnEmptyOptional() {
+            // Given
+            UUID id = UUID.randomUUID();
+
+            // When
+            Optional<RouteProjection> routeProjection = routeJdbcRepository.findById(id);
+
+            // Then
+            assertThat(routeProjection).isEmpty();
+        }
+    }
 
     @Sql(value = "route.sql")
     @Nested

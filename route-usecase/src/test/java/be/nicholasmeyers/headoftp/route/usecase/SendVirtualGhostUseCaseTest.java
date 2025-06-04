@@ -42,7 +42,7 @@ public class SendVirtualGhostUseCaseTest {
             // Given
             when(routeQueryRepository.findAllActiveRoutes()).thenReturn(List.of(createRouteProjection1()));
 
-            RoutePointProjection routePointProjection = new RoutePointProjection(0.0, 0.0, 0.0);
+            RoutePointProjection routePointProjection = new RoutePointProjection(0.0, 0.0, 0.0, 0);
             when(routePointQueryRepository.findAllRoutePointsByRouteId(any(UUID.class))).thenReturn(List.of(routePointProjection));
 
             // When

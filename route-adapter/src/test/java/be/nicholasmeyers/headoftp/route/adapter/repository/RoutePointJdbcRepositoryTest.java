@@ -30,7 +30,7 @@ public class RoutePointJdbcRepositoryTest {
             List<RoutePointProjection> routePoints = routePointJdbcRepository.findAllRoutePointsByRouteId(routeId);
 
             // Then
-            assertThat(routePoints).containsExactly(new RoutePointProjection(34.4, 55.9, 90.5));
+            assertThat(routePoints).containsExactly(new RoutePointProjection(34.4, 55.9, 90.5, 40002));
 
         }
     }
@@ -48,7 +48,7 @@ public class RoutePointJdbcRepositoryTest {
             Optional<RoutePointProjection> routePoint = routePointJdbcRepository.findRoutePointByRouteIdAndMetersOnRoute(routeId, meters);
 
             // Then
-            assertThat(routePoint).contains(new RoutePointProjection(34.4, 55.9, 90.5));
+            assertThat(routePoint).contains(new RoutePointProjection(34.4, 55.9, 90.5, 40002));
         }
 
         @Test
@@ -62,6 +62,34 @@ public class RoutePointJdbcRepositoryTest {
 
             // Then
             assertThat(routePoint).isEmpty();
+        }
+    }
+
+    @Sql(value = "device.sql")
+    @Nested
+    class FindLastRoutePointByParticipantId {
+        @Test
+        void givenParticipantId_whenFindLastRoutePointByParticipantId_thenReturnLastRoutePoint() {
+            // Given
+            UUID participantId = UUID.fromString("33333333-3333-3333-3333-333333333333");
+
+            // When
+            Optional<RoutePointProjection> lastRoutePoint = routePointJdbcRepository.findLastRoutePointByParticipantId(participantId);
+
+            // Then
+            assertThat(lastRoutePoint).contains(new RoutePointProjection(37.7749, -122.4194, 10.0, 0));
+        }
+
+        @Test
+        void givenParticipantId_whenFindLastRoutePointByParticipantId_thenReturnEmptyOptional() {
+            // Given
+            UUID participantId = UUID.randomUUID();
+
+            // When
+            Optional<RoutePointProjection> lastRoutePoint = routePointJdbcRepository.findLastRoutePointByParticipantId(participantId);
+
+            // Then
+            assertThat(lastRoutePoint).isEmpty();
         }
     }
 }

@@ -35,7 +35,7 @@ public class NavigateToMetersOnRouteUseCaseTest {
             UUID routeId = UUID.fromString("d822b9af-550a-4919-9369-ad24075de66a");
             Integer meters = 40000;
 
-            RoutePointProjection routePointProjection = new RoutePointProjection(55.3, 90.1, 0.0);
+            RoutePointProjection routePointProjection = new RoutePointProjection(55.3, 90.1, 0.0, 20);
             when(routePointQueryRepository.findRoutePointByRouteIdAndMetersOnRoute(any(UUID.class), anyInt()))
                     .thenReturn(Optional.of(routePointProjection));
 

@@ -13,6 +13,7 @@ import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutePointsByRouteIdUseCa
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutesUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindRoutePointCenterByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.NavigateToMetersOnRouteUseCase;
+import be.nicholasmeyers.headoftp.route.usecase.NavigateToTpOnRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.PatchRouteUseCase;
 import io.jenetics.jpx.GPX;
 import io.jenetics.jpx.Metadata;
@@ -47,7 +48,7 @@ public class RouteController implements RouteApi {
     private static final String MIME_TYPE_XML = "application/xml";
     private static final String MIME_TYPE_XML_GPX = "application/gpx+xml";
     private static final ZoneId ZONE_ID_BRUSSELS = ZoneId.of("Europe/Brussels");
-    private static final RoutePointProjection BRUSSELS_CENTER = new RoutePointProjection(50.8467, 4.3499, 0.0);
+    private static final RoutePointProjection BRUSSELS_CENTER = new RoutePointProjection(50.8467, 4.3499, 0.0, 0);
 
     private final Tika tika = new Tika();
 
@@ -58,6 +59,7 @@ public class RouteController implements RouteApi {
     private final FindAllRoutePointsByRouteIdUseCase findAllRoutePointsByRouteIdUseCase;
     private final FindRoutePointCenterByRouteIdUseCase findRoutePointCenterByRouteIdUseCase;
     private final NavigateToMetersOnRouteUseCase navigateToMetersOnRouteUseCase;
+    private final NavigateToTpOnRouteUseCase navigateToTpOnRouteUseCase;
 
     @Override
     public ResponseEntity<Void> createRoute(Resource body) {
@@ -108,12 +110,23 @@ public class RouteController implements RouteApi {
     }
 
     @Override
-    public ResponseEntity<Void> redirectToNavigation(UUID id, Integer meters) {
-        Optional<String> url = navigateToMetersOnRouteUseCase.navigateToMetersOnRoute(id, meters);
-        if (url.isPresent()) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create(url.get()));
-            return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
+    public ResponseEntity<Void> redirectToNavigation(UUID id, Integer meters, UUID tp) {
+        if (meters != null) {
+            Optional<String> url = navigateToMetersOnRouteUseCase.navigateToMetersOnRoute(id, meters);
+            if (url.isPresent()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setLocation(URI.create(url.get()));
+                return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
+            }
+        }
+
+        if (tp != null) {
+            Optional<String> url = navigateToTpOnRouteUseCase.navigateToTpOnRoute(id, tp);
+            if (url.isPresent()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setLocation(URI.create(url.get()));
+                return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
+            }
         }
         return new ResponseEntity<>(HttpStatus.valueOf(404));
     }

@@ -32,14 +32,14 @@ public class FindAllRoutePointsByRouteIdUseCaseTest {
             // Given
             UUID routeId = UUID.randomUUID();
 
-            RoutePointProjection routePointProjection = new RoutePointProjection(44.5, 78.1, 12.3);
+            RoutePointProjection routePointProjection = new RoutePointProjection(44.5, 78.1, 12.3, 10);
             when(routePointQueryRepository.findAllRoutePointsByRouteId(any(UUID.class))).thenReturn(List.of(routePointProjection));
 
             // When
             List<RoutePointProjection> routePoints = findAllRoutePointsByRouteIdUseCase.findAllRoutePointsByRouteId(routeId);
 
             //Then
-            assertThat(routePoints).containsExactly(new RoutePointProjection(44.5, 78.1, 12.3));
+            assertThat(routePoints).containsExactly(new RoutePointProjection(44.5, 78.1, 12.3, 10));
             verify(routePointQueryRepository).findAllRoutePointsByRouteId(routeId);
         }
     }

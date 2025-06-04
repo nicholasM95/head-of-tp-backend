@@ -110,8 +110,16 @@ paths:
             type: integer
             format: int32
             example: 40000
-          required: true
-          description: meter on route
+          required: false
+          description: Meter on route
+        - in: query
+          name: tp
+          schema:
+            type: string
+            format: uuid
+            example: ee6ae279-a7d7-4e82-9291-f91821b6d007
+          required: false
+          description: Unique identifier of the participant
       responses:
         '302':
           description: Redirect to route
