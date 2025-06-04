@@ -67,7 +67,7 @@ public class RoutePointCalculateUtils {
             }
         }
 
-        return (int) ((distanceRemaining / averageSpeedMps) * 1000);
+        return (int) ((distanceRemaining / averageSpeedMps));
     }
 
 
