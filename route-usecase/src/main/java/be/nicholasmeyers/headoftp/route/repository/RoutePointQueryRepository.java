@@ -1,5 +1,6 @@
 package be.nicholasmeyers.headoftp.route.repository;
 
+import be.nicholasmeyers.headoftp.route.projection.RoutePointDeviceProjection;
 import be.nicholasmeyers.headoftp.route.projection.RoutePointProjection;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface RoutePointQueryRepository {
     Optional<RoutePointProjection> findRoutePointByRouteIdAndMetersOnRoute(UUID routeId, Integer metersOnRoute);
 
     Optional<RoutePointProjection> findLastRoutePointByParticipantId(UUID participantId);
+
+    List<RoutePointDeviceProjection> findLastRoutePointOfEveryDevice();
 }

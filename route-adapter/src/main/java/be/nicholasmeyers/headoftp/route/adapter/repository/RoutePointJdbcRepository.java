@@ -1,6 +1,8 @@
 package be.nicholasmeyers.headoftp.route.adapter.repository;
 
+import be.nicholasmeyers.headoftp.route.projection.RoutePointDeviceProjection;
 import be.nicholasmeyers.headoftp.route.projection.RoutePointProjection;
+import be.nicholasmeyers.headoftp.route.projection.Vehicle;
 import be.nicholasmeyers.headoftp.route.repository.RoutePointQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,7 +30,7 @@ public class RoutePointJdbcRepository implements RoutePointQueryRepository {
                 ORDER BY distance_from_start_in_meter
                 """;
 
-        return template.query(query, Map.of("routeId", routeId), this::map);
+        return template.query(query, Map.of("routeId", routeId), this::mapRoutePointProjection);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class RoutePointJdbcRepository implements RoutePointQueryRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("routeId", routeId);
         params.put("metersOnRoute", metersOnRoute);
-        return template.query(query, params, this::map).stream().findFirst();
+        return template.query(query, params, this::mapRoutePointProjection).stream().findFirst();
     }
 
     @Override
@@ -55,14 +57,37 @@ public class RoutePointJdbcRepository implements RoutePointQueryRepository {
                 ORDER BY location_timestamp DESC
                 LIMIT 1
                 """;
-        return template.query(query, Map.of("participantId", participantId), this::map).stream().findFirst();
+        return template.query(query, Map.of("participantId", participantId), this::mapRoutePointProjection).stream().findFirst();
     }
 
-    private RoutePointProjection map(ResultSet resultSet, int i) throws SQLException {
+    @Override
+    public List<RoutePointDeviceProjection> findLastRoutePointOfEveryDevice() {
+        String query = """
+                SELECT DISTINCT ON (device_location.device_id) device_location.device_id,
+                                                               latitude,
+                                                               longitude,
+                                                               participant.vehicle
+                FROM device_location
+                         LEFT JOIN participant ON device_location.device_id = UPPER(participant.device_id)
+                ORDER BY device_location.device_id, location_timestamp DESC;
+                """;
+
+        return template.query(query, Map.of(), this::mapRoutePointDeviceProjection);
+    }
+
+    private RoutePointProjection mapRoutePointProjection(ResultSet resultSet, int i) throws SQLException {
         return new RoutePointProjection(
                 resultSet.getDouble("latitude"),
                 resultSet.getDouble("longitude"),
                 resultSet.getDouble("altitude"),
                 resultSet.getInt("distance_from_start_in_meter"));
+    }
+
+    private RoutePointDeviceProjection mapRoutePointDeviceProjection(ResultSet resultSet, int i) throws SQLException {
+        return new RoutePointDeviceProjection(
+                resultSet.getString("device_id"),
+                resultSet.getDouble("latitude"),
+                resultSet.getDouble("longitude"),
+                Vehicle.valueOf(resultSet.getString("vehicle")));
     }
 }

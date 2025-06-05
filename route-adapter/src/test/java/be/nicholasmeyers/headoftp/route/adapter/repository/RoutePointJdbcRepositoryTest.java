@@ -1,5 +1,6 @@
 package be.nicholasmeyers.headoftp.route.adapter.repository;
 
+import be.nicholasmeyers.headoftp.route.projection.RoutePointDeviceProjection;
 import be.nicholasmeyers.headoftp.route.projection.RoutePointProjection;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static be.nicholasmeyers.headoftp.route.projection.Vehicle.BIKE;
+import static be.nicholasmeyers.headoftp.route.projection.Vehicle.CAR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DatabaseTest
@@ -90,6 +93,24 @@ public class RoutePointJdbcRepositoryTest {
 
             // Then
             assertThat(lastRoutePoint).isEmpty();
+        }
+    }
+
+    @Sql(value = "device.sql")
+    @Nested
+    class FindLastRoutePointOfEveryDevice {
+        @Test
+        void given_whenFindLastRoutePointOfEveryDevice_thenReturnListOfLastRoutePoints() {
+            // Given
+
+            // When
+            List<RoutePointDeviceProjection> routePoints = routePointJdbcRepository.findLastRoutePointOfEveryDevice();
+
+            // Then
+            assertThat(routePoints).containsExactly(
+                    new RoutePointDeviceProjection("DEVICE001", 37.7749, -122.4194, CAR),
+                    new RoutePointDeviceProjection("DEVICE002", 40.7128, -74.006, BIKE)
+            );
         }
     }
 }
