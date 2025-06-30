@@ -10,7 +10,6 @@ module "application" {
   namespace_name   = var.namespace
   helm_path        = "../../helm/application"
   docker_config    = var.docker_config
-  vault_uri        = var.vault_uri
 }
 
 module "vault_connection" {
