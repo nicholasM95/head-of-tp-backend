@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,9 +40,9 @@ public class DeviceControllerTest {
     private FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
 
     @Nested
-    class CreateDeviceLocation {
+    class CreateDeviceLocationOld {
         @Test
-        void givenDeviceLocationParams_whenCreateDeviceLocation_thenSuccess() throws Exception {
+        void givenDeviceLocationParams_whenCreateDeviceLocationOld_thenSuccess() throws Exception {
             // Given
             String deviceId = "484897";
             String timestamp = "56846";
@@ -57,7 +58,7 @@ public class DeviceControllerTest {
                     .thenReturn(new Notification());
 
             // When & Then
-            mockMvc.perform(post("/device?id={deviceId}&timestamp={timestamp}&lat={lat}&lon={lon}&speed={speed}&bearing={bearing}&altitude={altitude}&accuracy={accuracy}&batt={battery}",
+            mockMvc.perform(post("/device/old?id={deviceId}&timestamp={timestamp}&lat={lat}&lon={lon}&speed={speed}&bearing={bearing}&altitude={altitude}&accuracy={accuracy}&batt={battery}",
                             deviceId, timestamp, latitude, longitude, speed, bearing, altitude, accuracy, battery))
                     .andExpect(status().isOk());
 
@@ -70,7 +71,7 @@ public class DeviceControllerTest {
         }
 
         @Test
-        void givenDeviceLocationParamsWithLongDeviceId_whenCreateDeviceLocation_thenSuccess() throws Exception {
+        void givenDeviceLocationParamsWithLongDeviceId_whenCreateDeviceLocationOld_thenSuccess() throws Exception {
             // Given
             String deviceId = "484897testtesdzefjizezd42343I8O8";
             String timestamp = "56846";
@@ -86,7 +87,7 @@ public class DeviceControllerTest {
                     .thenReturn(new Notification());
 
             // When & Then
-            mockMvc.perform(post("/device?id={deviceId}&timestamp={timestamp}&lat={lat}&lon={lon}&speed={speed}&bearing={bearing}&altitude={altitude}&accuracy={accuracy}&batt={battery}",
+            mockMvc.perform(post("/device/old?id={deviceId}&timestamp={timestamp}&lat={lat}&lon={lon}&speed={speed}&bearing={bearing}&altitude={altitude}&accuracy={accuracy}&batt={battery}",
                             deviceId, timestamp, latitude, longitude, speed, bearing, altitude, accuracy, battery))
                     .andExpect(status().isOk());
 
@@ -99,7 +100,7 @@ public class DeviceControllerTest {
         }
 
         @Test
-        void givenInvalidDeviceLocationParams_whenCreateDeviceLocation_thenSuccess() throws Exception {
+        void givenInvalidDeviceLocationParams_whenCreateDeviceLocationOld_thenSuccess() throws Exception {
             // Given
             String deviceId = "";
             String timestamp = "56846";
@@ -115,12 +116,164 @@ public class DeviceControllerTest {
                     .thenReturn(Notification.of("error"));
 
             // When & Then
-            mockMvc.perform(post("/device?id={deviceId}&timestamp={timestamp}&lat={lat}&lon={lon}&speed={speed}&bearing={bearing}&altitude={altitude}&accuracy={accuracy}&batt={battery}",
+            mockMvc.perform(post("/device/old?id={deviceId}&timestamp={timestamp}&lat={lat}&lon={lon}&speed={speed}&bearing={bearing}&altitude={altitude}&accuracy={accuracy}&batt={battery}",
                             deviceId, timestamp, latitude, longitude, speed, bearing, altitude, accuracy, battery))
                     .andExpect(status().isOk());
 
 
             CreateDeviceLocationRequest expected = new CreateDeviceLocationRequest("", 56846L, 1.2, 99.2, 25.6, 9.0,
+                    9900.3, 99.88, 10.0);
+            ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
+            verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());
+            assertThat(actual.getValue()).isEqualTo(expected);
+        }
+    }
+
+
+
+    @Nested
+    class CreateDeviceLocation {
+        @Test
+        void givenDeviceLocationParams_whenCreateDeviceLocation_thenSuccess() throws Exception {
+            // Given
+            String request = """
+                    {
+                        "location": {
+                            "timestamp": "2025-07-08T23:01:53.561Z",
+                            "coords": {
+                                "latitude": 1.2,
+                                "longitude": 99.2,
+                                "accuracy": 99.88,
+                                "speed": 25.6,
+                                "heading": -1,
+                                "altitude": 9900.3
+                            },
+                            "is_moving": false,
+                            "odometer": 0,
+                            "event": "motionchange",
+                            "battery": {
+                                "level": 10.0,
+                                "is_charging": false
+                            },
+                            "activity": {
+                                "type": "still"
+                            },
+                            "extras": {},
+                            "_": "&id=484897&lat=1.2&lon=99.2&timestamp=2025-07-08T23:01:53.561Z&"
+                        },
+                        "device_id": "484897"
+                    }
+                    """;
+
+            when(createDeviceLocationUseCase.createDeviceLocation(any(CreateDeviceLocationRequest.class)))
+                    .thenReturn(new Notification());
+
+            // When & Then
+            mockMvc.perform(post("/device")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isOk());
+
+
+            CreateDeviceLocationRequest expected = new CreateDeviceLocationRequest("484897", 1752015713561L, 1.2, 99.2, 25.6, 0.0,
+                    9900.3, 99.88, 10.0);
+            ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
+            verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());
+            assertThat(actual.getValue()).isEqualTo(expected);
+        }
+
+        @Test
+        void givenDeviceLocationParamsWithLongDeviceId_whenCreateDeviceLocation_thenSuccess() throws Exception {
+            // Given
+            String request = """
+                    {
+                        "location": {
+                            "timestamp": "2025-07-08T23:01:53.561Z",
+                            "coords": {
+                                "latitude": 1.2,
+                                "longitude": 99.2,
+                                "accuracy": 99.88,
+                                "speed": 25.6,
+                                "heading": -1,
+                                "altitude": 9900.3
+                            },
+                            "is_moving": false,
+                            "odometer": 0,
+                            "event": "motionchange",
+                            "battery": {
+                                "level": 10.0,
+                                "is_charging": false
+                            },
+                            "activity": {
+                                "type": "still"
+                            },
+                            "extras": {},
+                            "_": "&id=484897testtesdzefjizezd42343I8O8&lat=1.2&lon=99.2&timestamp=2025-07-08T23:01:53.561Z&"
+                        },
+                        "device_id": "484897testtesdzefjizezd42343I8O8"
+                    }
+                    """;
+
+            when(createDeviceLocationUseCase.createDeviceLocation(any(CreateDeviceLocationRequest.class)))
+                    .thenReturn(new Notification());
+
+            // When & Then
+            mockMvc.perform(post("/device")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isOk());
+
+
+            CreateDeviceLocationRequest expected = new CreateDeviceLocationRequest("484897testtesdzefjiz", 1752015713561L, 1.2, 99.2, 25.6, 0.0,
+                    9900.3, 99.88, 10.0);
+            ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
+            verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());
+            assertThat(actual.getValue()).isEqualTo(expected);
+        }
+
+        @Test
+        void givenInvalidDeviceLocationParams_whenCreateDeviceLocation_thenSuccess() throws Exception {
+            // Given
+            String request = """
+                    {
+                        "location": {
+                            "timestamp": "2025-07-08T23:01:53.561Z",
+                            "coords": {
+                                "latitude": 1.2,
+                                "longitude": 99.2,
+                                "accuracy": 99.88,
+                                "speed": 25.6,
+                                "heading": -1,
+                                "altitude": 9900.3
+                            },
+                            "is_moving": false,
+                            "odometer": 0,
+                            "event": "motionchange",
+                            "battery": {
+                                "level": 10.0,
+                                "is_charging": false
+                            },
+                            "activity": {
+                                "type": "still"
+                            },
+                            "extras": {},
+                            "_": "&id=&lat=1.2&lon=99.2&timestamp=2025-07-08T23:01:53.561Z&"
+                        },
+                        "device_id": ""
+                    }
+                    """;
+
+            when(createDeviceLocationUseCase.createDeviceLocation(any(CreateDeviceLocationRequest.class)))
+                    .thenReturn(Notification.of("error"));
+
+            // When & Then
+            mockMvc.perform(post("/device")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isOk());
+
+
+            CreateDeviceLocationRequest expected = new CreateDeviceLocationRequest("", 1752015713561L, 1.2, 99.2, 25.6, 0.0,
                     9900.3, 99.88, 10.0);
             ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
             verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());

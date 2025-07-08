@@ -1,6 +1,7 @@
 package be.nicholasmeyers.headoftp.device.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
+import be.nicholasmeyers.headoftp.device.adapter.resource.CreateDeviceLocationRequestResource;
 import be.nicholasmeyers.headoftp.device.adapter.resource.DeviceResponseResource;
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +27,37 @@ public class DeviceController implements DeviceApi {
     private final FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
 
     @Override
-    public ResponseEntity<Void> createDeviceLocation(String id, String timestamp, String lat, String lon, String speed, String bearing,
-                                                     String altitude, String accuracy, String batt) {
+    public ResponseEntity<Void> createDeviceLocation(CreateDeviceLocationRequestResource createDeviceLocationRequestResource) {
+        log.info(createDeviceLocationRequestResource.toString());
+        String id = createDeviceLocationRequestResource.getDeviceId();
+        if (id != null && id.length() > MAX_ID_LENGTH) {
+            id = id.substring(0, MAX_ID_LENGTH);
+        }
+
+        Instant instant = Instant.parse(createDeviceLocationRequestResource.getLocation().getTimestamp());
+        Long timestampLong = instant.toEpochMilli();
+        Double latitude = createDeviceLocationRequestResource.getLocation().getCoords().getLatitude();
+        Double longitude = createDeviceLocationRequestResource.getLocation().getCoords().getLongitude();
+        Double speedDouble = createDeviceLocationRequestResource.getLocation().getCoords().getSpeed();
+        Double bearingDouble = 0.0;
+        Double altitudeDouble = createDeviceLocationRequestResource.getLocation().getCoords().getAltitude();
+        Double accuracyDouble = createDeviceLocationRequestResource.getLocation().getCoords().getAccuracy();
+        Double batteryDouble = createDeviceLocationRequestResource.getLocation().getBattery().getLevel();
+
+        CreateDeviceLocationRequest createDeviceLocationRequest = new CreateDeviceLocationRequest(id, timestampLong, latitude, longitude, speedDouble,
+                bearingDouble, altitudeDouble, accuracyDouble, batteryDouble);
+
+        Notification notification = createDeviceLocationUseCase.createDeviceLocation(createDeviceLocationRequest);
+        if (notification.hasErrors()) {
+            log.error(notification.getErrors().toString());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> createDeviceLocationOld(String id, String timestamp, String lat, String lon, String speed, String bearing,
+                                                        String altitude, String accuracy, String batt) {
 
         if (id != null && id.length() > MAX_ID_LENGTH) {
             id = id.substring(0, MAX_ID_LENGTH);

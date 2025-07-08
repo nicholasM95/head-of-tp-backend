@@ -8,11 +8,11 @@ tags:
   - name: device
     description: device
 paths:
-  /device:
+  /device/old:
     post:
       tags:
         - device
-      operationId: createDeviceLocation
+      operationId: createDeviceLocationOld
       summary: Create a device location
       parameters:
         - in: query
@@ -69,6 +69,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /device:
+    post:
+      tags:
+        - device
+      operationId: createDeviceLocation
+      summary: Create a device location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceLocationRequest'
+      responses:
+        200:
+          description: Device location successfully created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
     get:
       tags:
         - device
@@ -85,6 +106,86 @@ paths:
                   $ref: '#/components/schemas/DeviceResponse'
 components:
   schemas:
+    CreateDeviceLocationRequest:
+      required:
+        - location
+        - device_id
+      properties:
+        location:
+          $ref: '#/components/schemas/DeviceLocation'
+        device_id:
+          type: string
+    DeviceLocation:
+      required:
+        - timestamp
+        - coords
+        - is_moving
+        - odometer
+        - event
+        - battery
+        - activity
+        - _
+      properties:
+        timestamp:
+          type: string
+        coords:
+          $ref: '#/components/schemas/DeviceLocationCoords'
+        is_moving:
+          type: boolean
+        odometer:
+          type: integer
+          format: int64
+        event:
+          type: string
+        battery:
+          $ref: '#/components/schemas/DeviceLocationBattery'
+        activity:
+          $ref: '#/components/schemas/DeviceLocationActivity'
+        _:
+          type: string
+    DeviceLocationCoords:
+      required:
+        - latitude
+        - longitude
+        - accuracy
+        - speed
+        - heading
+        - altitude
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        accuracy:
+          type: number
+          format: double
+        speed:
+          type: number
+          format: double
+        heading:
+          type: number
+          format: double
+        altitude:
+          type: number
+          format: double
+    DeviceLocationBattery:
+      required:
+        - level
+        - is_charging
+      properties:
+        level:
+          type: number
+          format: double
+        is_charging:
+          type: boolean
+    DeviceLocationActivity:
+      required:
+        - type
+      properties:
+        type:
+          type: string
     DeviceResponse:
       required:
         - id
