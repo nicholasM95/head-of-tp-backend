@@ -134,7 +134,7 @@ public class DeviceControllerTest {
     @Nested
     class CreateDeviceLocation {
         @Test
-        void givenDeviceLocationParams_whenCreateDeviceLocation_thenSuccess() throws Exception {
+        void givenDeviceLocation_whenCreateDeviceLocation_thenSuccess() throws Exception {
             // Given
             String request = """
                     {
@@ -183,7 +183,7 @@ public class DeviceControllerTest {
         }
 
         @Test
-        void givenDeviceLocationParamsWithLongDeviceId_whenCreateDeviceLocation_thenSuccess() throws Exception {
+        void givenDeviceLocationWithLongDeviceId_whenCreateDeviceLocation_thenSuccess() throws Exception {
             // Given
             String request = """
                     {
@@ -232,7 +232,7 @@ public class DeviceControllerTest {
         }
 
         @Test
-        void givenInvalidDeviceLocationParams_whenCreateDeviceLocation_thenSuccess() throws Exception {
+        void givenInvalidDeviceLocation_whenCreateDeviceLocation_thenSuccess() throws Exception {
             // Given
             String request = """
                     {
@@ -278,6 +278,18 @@ public class DeviceControllerTest {
             ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
             verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());
             assertThat(actual.getValue()).isEqualTo(expected);
+        }
+
+        @Test
+        void givenDeviceLocationNotificationParams_whenCreateDeviceLocation_thenSuccess() throws Exception {
+            // Given
+
+            // When & Then
+            mockMvc.perform(post("/device")
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .param("id", "nicholasa539273")
+                            .param("notificationToken", "er9ZyztTT62vE28WIBiACQ%3AAPA91b..."))
+                    .andExpect(status().isOk());
         }
     }
 

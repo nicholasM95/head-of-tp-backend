@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -25,6 +27,13 @@ public class DeviceController implements DeviceApi {
     private static final int MAX_ID_LENGTH = 20;
     private final CreateDeviceLocationUseCase  createDeviceLocationUseCase;
     private final FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
+
+    @PostMapping(value = "/device", consumes = "application/x-www-form-urlencoded")
+    public ResponseEntity<Void> createDeviceLocationNotificationToken(@RequestParam("id") String id,
+                                                                      @RequestParam("notificationToken") String notificationToken) {
+        log.info("received request to create device location notification token: {}", id);
+        return ResponseEntity.ok().build();
+    }
 
     @Override
     public ResponseEntity<Void> createDeviceLocation(CreateDeviceLocationRequestResource createDeviceLocationRequestResource) {
