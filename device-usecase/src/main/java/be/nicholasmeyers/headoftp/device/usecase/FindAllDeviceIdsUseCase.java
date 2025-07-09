@@ -10,7 +10,7 @@ import java.util.List;
 @Slf4j
 public class FindAllDeviceIdsUseCase {
 
-    private DeviceLocationQueryRepository deviceLocationQueryRepository;
+    private final DeviceLocationQueryRepository deviceLocationQueryRepository;
 
     public List<String> findAllDeviceIds() {
         log.info("Finding all device ids");
