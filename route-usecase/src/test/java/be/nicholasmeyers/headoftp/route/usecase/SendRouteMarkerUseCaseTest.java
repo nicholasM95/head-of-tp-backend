@@ -51,7 +51,7 @@ public class SendRouteMarkerUseCaseTest {
             RoutePointProjection routePointProjection = new RoutePointProjection(10.0, 20.0, 0.0, 0);
             when(routePointQueryRepository.findAllRoutePointsByRouteId(any(UUID.class))).thenReturn(List.of(routePointProjection));
 
-            RoutePointDeviceProjection routePointDeviceProjection = new RoutePointDeviceProjection("", 44.3, 55.1, Vehicle.CAR);
+            RoutePointDeviceProjection routePointDeviceProjection = new RoutePointDeviceProjection("NICHOLAS_213", 44.3, 55.1, Vehicle.CAR);
             when(routePointQueryRepository.findLastRoutePointOfEveryDevice())
                     .thenReturn(List.of(routePointDeviceProjection));
 
@@ -66,8 +66,8 @@ public class SendRouteMarkerUseCaseTest {
             verify(routePointQueryRepository).findLastRoutePointOfEveryDevice();
 
             assertThat(captor.getValue()).containsExactly(
-                    new RouteMarkerProjection(UUID.fromString("e0483c47-0aa0-442d-808b-8897687f4af2"), 10.0, 20.0, GHOST),
-                    new RouteMarkerProjection(UUID.fromString("e0483c47-0aa0-442d-808b-8897687f4af2"), 44.3, 55.1, CAR)
+                    new RouteMarkerProjection(UUID.fromString("e0483c47-0aa0-442d-808b-8897687f4af2"), "GHOST_DEVICE_ID", 10.0, 20.0, GHOST),
+                    new RouteMarkerProjection(UUID.fromString("e0483c47-0aa0-442d-808b-8897687f4af2"), "NICHOLAS_213", 44.3, 55.1, CAR)
             );
 
         }

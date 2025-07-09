@@ -22,6 +22,7 @@ import static be.nicholasmeyers.headoftp.route.utils.RoutePointCalculateUtils.ca
 @Slf4j
 public class SendRouteMarkerUseCase {
 
+    private static final String GHOST_DEVICE_ID = "GHOST_DEVICE_ID";
     private final RouteQueryRepository routeQueryRepository;
     private final RoutePointQueryRepository routePointQueryRepository;
     private final LocationEventSender locationEventSender;
@@ -34,7 +35,7 @@ public class SendRouteMarkerUseCase {
         routes.forEach(route -> {
             routeMarkers.add(createRouteMarkerGhost(route));
             devices.forEach(device -> {
-                routeMarkers.add(new RouteMarkerProjection(route.id(), device.latitude(), device.longitude(), MarkerType.valueOf(device.vehicle().name())));
+                routeMarkers.add(new RouteMarkerProjection(route.id(), device.deviceId(), device.latitude(), device.longitude(), MarkerType.valueOf(device.vehicle().name())));
             });
         });
         locationEventSender.sendLocationEvent(routeMarkers);
@@ -47,13 +48,13 @@ public class SendRouteMarkerUseCase {
             List<RoutePointProjection> routePoints = routePointQueryRepository.findAllRoutePointsByRouteId(route.id());
             long startTimeInMillis = route.startTime().plusMinutes(route.pauseInMinutes()).atZone(zoneId).toInstant().toEpochMilli();
             RoutePointProjection ghost = calculateGhostRiderTimes(routePoints, route.averageSpeed(), startTimeInMillis);
-            return new RouteMarkerProjection(route.id(), ghost.latitude(), ghost.longitude(), GHOST);
+            return new RouteMarkerProjection(route.id(), GHOST_DEVICE_ID, ghost.latitude(), ghost.longitude(), GHOST);
         } else {
             log.info("Calculate ghost points for {} from estimated start time", route.id());
             List<RoutePointProjection> routePoints = routePointQueryRepository.findAllRoutePointsByRouteId(route.id());
             long startTimeInMillis = route.estimatedStartTime().plusMinutes(route.pauseInMinutes()).atZone(zoneId).toInstant().toEpochMilli();
             RoutePointProjection ghost = calculateGhostRiderTimes(routePoints, route.estimatedAverageSpeed(), startTimeInMillis);
-            return new RouteMarkerProjection(route.id(), ghost.latitude(), ghost.longitude(), GHOST);
+            return new RouteMarkerProjection(route.id(), GHOST_DEVICE_ID, ghost.latitude(), ghost.longitude(), GHOST);
         }
     }
 }

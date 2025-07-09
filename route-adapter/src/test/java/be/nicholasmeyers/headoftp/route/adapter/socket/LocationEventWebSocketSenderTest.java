@@ -30,7 +30,7 @@ public class LocationEventWebSocketSenderTest {
             // Given
             RouteMarkerProjection routeMarkerProjection =
                     new RouteMarkerProjection(UUID.fromString("5d2a0a54-0327-42aa-bfd5-1521731c3370"),
-                            90.4, 55.4, GHOST);
+                            "GHOST_DEVICE_ID", 90.4, 55.4, GHOST);
             List<RouteMarkerProjection> routeMarkerProjections = List.of(routeMarkerProjection);
 
             // When

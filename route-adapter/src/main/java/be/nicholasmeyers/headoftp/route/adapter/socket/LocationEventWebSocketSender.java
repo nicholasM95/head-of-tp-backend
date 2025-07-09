@@ -17,9 +17,10 @@ public class LocationEventWebSocketSender implements LocationEventSender {
     public void sendLocationEvent(List<RouteMarkerProjection> routeMarkerProjections) {
         routeMarkerProjections.forEach(routeMarkerProjection -> {
             RoutePoint routePoint = new RoutePoint(routeMarkerProjection.latitude(), routeMarkerProjection.longitude());
-            String destination = "/topic/route/ID/TYPE"
+            String destination = "/topic/route/ID/TYPE/DEVICE"
                     .replace("ID", routeMarkerProjection.routeId().toString())
-                    .replace("TYPE", routeMarkerProjection.type().name().toLowerCase());
+                    .replace("TYPE", routeMarkerProjection.type().name().toLowerCase())
+                    .replace("DEVICE", routeMarkerProjection.deviceId().toUpperCase());
             messagingTemplate.convertAndSend(destination, routePoint);
         });
     }
