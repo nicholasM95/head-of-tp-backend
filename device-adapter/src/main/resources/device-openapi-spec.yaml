@@ -121,10 +121,7 @@ components:
         - coords
         - is_moving
         - odometer
-        - event
         - battery
-        - activity
-        - _
       properties:
         timestamp:
           type: string
@@ -135,14 +132,8 @@ components:
         odometer:
           type: integer
           format: int64
-        event:
-          type: string
         battery:
           $ref: '#/components/schemas/DeviceLocationBattery'
-        activity:
-          $ref: '#/components/schemas/DeviceLocationActivity'
-        _:
-          type: string
     DeviceLocationCoords:
       required:
         - latitude
@@ -180,12 +171,6 @@ components:
           format: double
         is_charging:
           type: boolean
-    DeviceLocationActivity:
-      required:
-        - type
-      properties:
-        type:
-          type: string
     DeviceResponse:
       required:
         - id
