@@ -68,7 +68,8 @@ public class RoutePointJdbcRepository implements RoutePointQueryRepository {
                                                                longitude,
                                                                participant.vehicle
                 FROM device_location
-                         LEFT JOIN participant ON device_location.device_id = UPPER(participant.device_id)
+                         LEFT JOIN participant ON UPPER(device_location.device_id) = UPPER(participant.device_id)
+                WHERE participant.id IS NOT NULL
                 ORDER BY device_location.device_id, location_timestamp DESC;
                 """;
 
