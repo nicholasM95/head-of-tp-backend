@@ -82,6 +82,7 @@ public class ParticipantController implements ParticipantApi {
                 .role(RoleTypeResource.valueOf(participantProjection.role().name()))
                 .createDate(participantProjection.createDate().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime())
                 .lastModifiedDate(participantProjection.lastModifiedDate().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime())
+                .lastModifiedDateLocation(participantProjection.lastModifiedDateLocation().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime())
                 .build();
     }
 }

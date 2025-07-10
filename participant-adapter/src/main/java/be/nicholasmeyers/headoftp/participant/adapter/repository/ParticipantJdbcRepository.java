@@ -23,7 +23,27 @@ public class ParticipantJdbcRepository implements ParticipantQueryRepository {
     @Override
     public List<ParticipantProjection> findAllParticipants() {
         String query = """
-                SELECT id, name, device_id, vehicle, role, created_date, last_modified_date FROM participant ORDER BY name
+                SELECT id, name, device_id, vehicle, role, participant_created_date, last_modified_date, location_created_date
+                FROM (
+                         SELECT
+                             p.id,
+                             p.name,
+                             p.device_id,
+                             p.vehicle,
+                             p.role,
+                             p.created_date AS participant_created_date,
+                             p.last_modified_date,
+                             l.created_date AS location_created_date,
+                             ROW_NUMBER() OVER (
+                                 PARTITION BY p.id
+                                 ORDER BY l.created_date DESC
+                                 ) AS rn
+                         FROM participant p
+                                  JOIN device_location l
+                                       ON UPPER(p.device_id) = UPPER(l.device_id)
+                     ) sub
+                WHERE rn = 1
+                ORDER BY name;
                 """;
 
         return template.query(query, Map.of(), this::map);
@@ -36,8 +56,9 @@ public class ParticipantJdbcRepository implements ParticipantQueryRepository {
                 resultSet.getString("device_id"),
                 ParticipantVehicle.valueOf(resultSet.getString("vehicle")),
                 ParticipantRole.valueOf(resultSet.getString("role")),
-                resultSet.getTimestamp("created_date").toLocalDateTime(),
-                resultSet.getTimestamp("last_modified_date").toLocalDateTime()
+                resultSet.getTimestamp("participant_created_date").toLocalDateTime(),
+                resultSet.getTimestamp("last_modified_date").toLocalDateTime(),
+                resultSet.getTimestamp("location_created_date").toLocalDateTime()
         );
     }
 }

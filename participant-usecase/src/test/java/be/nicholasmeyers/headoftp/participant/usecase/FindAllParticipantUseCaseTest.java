@@ -35,13 +35,13 @@ public class FindAllParticipantUseCaseTest {
 
             when(participantQueryRepository.findAllParticipants())
                     .thenReturn(List.of(
-                            new ParticipantProjection(UUID.fromString("4cccda25-fb41-47b3-9e0f-f63b68a0ad47"), "Nicholas Meyers", "8923", CAR, TP, LocalDateTime.of(2025, 5, 12, 15, 30), LocalDateTime.of(2025, 5, 12, 15, 30))));
+                            new ParticipantProjection(UUID.fromString("4cccda25-fb41-47b3-9e0f-f63b68a0ad47"), "Nicholas Meyers", "8923", CAR, TP, LocalDateTime.of(2025, 5, 12, 15, 30), LocalDateTime.of(2025, 5, 12, 15, 30), LocalDateTime.of(2025, 5, 12, 15, 30))));
 
             // When
             List<ParticipantProjection> participants = findAllParticipantUseCase.findAllParticipants();
 
             // Then
-            assertThat(participants).containsExactly(new ParticipantProjection(UUID.fromString("4cccda25-fb41-47b3-9e0f-f63b68a0ad47"), "Nicholas Meyers", "8923", CAR, TP, LocalDateTime.of(2025, 5, 12, 15, 30), LocalDateTime.of(2025, 5, 12, 15, 30)));
+            assertThat(participants).containsExactly(new ParticipantProjection(UUID.fromString("4cccda25-fb41-47b3-9e0f-f63b68a0ad47"), "Nicholas Meyers", "8923", CAR, TP, LocalDateTime.of(2025, 5, 12, 15, 30), LocalDateTime.of(2025, 5, 12, 15, 30), LocalDateTime.of(2025, 5, 12, 15, 30)));
         }
     }
 }

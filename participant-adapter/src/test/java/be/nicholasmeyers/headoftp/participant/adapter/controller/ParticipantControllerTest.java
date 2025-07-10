@@ -134,7 +134,8 @@ public class ParticipantControllerTest {
                             CAR,
                             TP,
                             LocalDateTime.of(2025, 5, 1, 12, 30),
-                            LocalDateTime.of(2025, 5, 1, 12, 30))));
+                            LocalDateTime.of(2025, 5, 1, 12, 30),
+                            LocalDateTime.of(2025, 5, 12, 15, 30))));
 
             // When & Then
             String expectedResponse = """
@@ -146,7 +147,8 @@ public class ParticipantControllerTest {
                         "vehicle": "CAR",
                         "role": "TP",
                         "createDate": "2025-05-01T12:30:00+02:00",
-                        "lastModifiedDate": "2025-05-01T12:30:00+02:00"
+                        "lastModifiedDate": "2025-05-01T12:30:00+02:00",
+                        "lastModifiedDateLocation": "2025-05-12T15:30:00+02:00"
                       }
                     ]
                     """;
