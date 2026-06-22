@@ -38,6 +38,9 @@ public class RoutePointJpaEntity {
     @Column(name = "altitude", nullable = false, updatable = false)
     private Double altitude;
 
+    @Column(name = "distance_from_start_in_meter", nullable = false, updatable = false)
+    private Integer distanceFromStartInMeters;
+
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
@@ -52,5 +55,6 @@ public class RoutePointJpaEntity {
         this.latitude = routePoint.getLatitude();
         this.longitude = routePoint.getLongitude();
         this.altitude = routePoint.getAltitude();
+        this.distanceFromStartInMeters = routePoint.getDistanceFromStartInMeter();
     }
 }

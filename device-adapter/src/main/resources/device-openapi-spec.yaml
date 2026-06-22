@@ -8,11 +8,11 @@ tags:
   - name: device
     description: device
 paths:
-  /device:
+  /device/old:
     post:
       tags:
         - device
-      operationId: createDeviceLocation
+      operationId: createDeviceLocationOld
       summary: Create a device location
       parameters:
         - in: query
@@ -69,8 +69,115 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /device:
+    post:
+      tags:
+        - device
+      operationId: createDeviceLocation
+      summary: Create a device location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceLocationRequest'
+      responses:
+        200:
+          description: Device location successfully created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    get:
+      tags:
+        - device
+      operationId: findAllDevices
+      summary: Find all devices
+      responses:
+        200:
+          description: return Devices successfully processed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceResponse'
 components:
   schemas:
+    CreateDeviceLocationRequest:
+      required:
+        - location
+        - device_id
+      properties:
+        location:
+          $ref: '#/components/schemas/DeviceLocation'
+        device_id:
+          type: string
+    DeviceLocation:
+      required:
+        - timestamp
+        - coords
+        - is_moving
+        - odometer
+        - battery
+      properties:
+        timestamp:
+          type: string
+        coords:
+          $ref: '#/components/schemas/DeviceLocationCoords'
+        is_moving:
+          type: boolean
+        odometer:
+          type: integer
+          format: int64
+        battery:
+          $ref: '#/components/schemas/DeviceLocationBattery'
+    DeviceLocationCoords:
+      required:
+        - latitude
+        - longitude
+        - accuracy
+        - speed
+        - heading
+        - altitude
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        accuracy:
+          type: number
+          format: double
+        speed:
+          type: number
+          format: double
+        heading:
+          type: number
+          format: double
+        altitude:
+          type: number
+          format: double
+    DeviceLocationBattery:
+      required:
+        - level
+        - is_charging
+      properties:
+        level:
+          type: number
+          format: double
+        is_charging:
+          type: boolean
+    DeviceResponse:
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          example: 72839
     ProblemDetailResponse:
       required:
         - title

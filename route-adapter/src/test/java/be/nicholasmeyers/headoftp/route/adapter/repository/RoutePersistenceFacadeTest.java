@@ -94,7 +94,7 @@ public class RoutePersistenceFacadeTest {
             assertThat(resultRoute.get("created_date")).isNotNull();
             assertThat(resultRoute.get("last_modified_date")).isNotNull();
 
-            String sqlRoutePoint = "SELECT id, route_id, latitude, longitude, altitude, created_date, last_modified_date FROM route_point";
+            String sqlRoutePoint = "SELECT id, route_id, latitude, longitude, altitude, distance_from_start_in_meter, created_date, last_modified_date FROM route_point";
             Map<String, Object> resultRoutePoint = jdbcTemplate.queryForMap(sqlRoutePoint);
             assertThat(resultRoute).isNotNull();
             assertThat(resultRoutePoint.get("id")).isNotNull();
@@ -102,6 +102,7 @@ public class RoutePersistenceFacadeTest {
             assertThat(resultRoutePoint.get("latitude")).isEqualTo(1.1);
             assertThat(resultRoutePoint.get("longitude")).isEqualTo(2.2);
             assertThat(resultRoutePoint.get("altitude")).isEqualTo(4.3);
+            assertThat(resultRoutePoint.get("distance_from_start_in_meter")).isEqualTo(0);
             assertThat(resultRoutePoint.get("created_date")).isNotNull();
             assertThat(resultRoutePoint.get("last_modified_date")).isNotNull();
         }

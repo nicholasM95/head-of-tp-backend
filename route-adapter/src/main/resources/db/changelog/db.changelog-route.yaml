@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/20250521/create-table-route.yaml
   - include:
       file: db/changelog/20250521/create-table-route_point.yaml
+  - include:
+      file: db/changelog/20250602/add-distance_from_start_in_meter-column-to-route_point.yaml

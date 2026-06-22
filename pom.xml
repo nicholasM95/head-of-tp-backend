@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.3</version>
         <relativePath/>
     </parent>
 
     <groupId>be.nicholasmeyers</groupId>
     <artifactId>head-of-tp</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>head-of-tp</name>
@@ -41,6 +41,9 @@
         <module>device-domain</module>
         <module>device-usecase</module>
         <module>device-adapter</module>
+        <module>participant-domain</module>
+        <module>participant-usecase</module>
+        <module>participant-adapter</module>
         <module>route-domain</module>
         <module>route-usecase</module>
         <module>route-adapter</module>

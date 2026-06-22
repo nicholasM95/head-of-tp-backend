@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"be.nicholasmeyers.headoftp.route.adapter", "be.nicholasmeyers.headoftp.device.adapter"})
-@EnableJpaRepositories(basePackages = {"be.nicholasmeyers.headoftp.route.adapter.repository", "be.nicholasmeyers.headoftp.device.adapter.repository"})
-@EntityScan(basePackages = {"be.nicholasmeyers.headoftp.route.adapter.repository", "be.nicholasmeyers.headoftp.device.adapter.repository"})
+@ComponentScan(basePackages = {"be.nicholasmeyers.headoftp.route.adapter", "be.nicholasmeyers.headoftp.device.adapter", "be.nicholasmeyers.headoftp.participant.adapter"})
+@EnableJpaRepositories(basePackages = {"be.nicholasmeyers.headoftp.route.adapter.repository", "be.nicholasmeyers.headoftp.device.adapter.repository", "be.nicholasmeyers.headoftp.participant.adapter.repository"})
+@EntityScan(basePackages = {"be.nicholasmeyers.headoftp.route.adapter.repository", "be.nicholasmeyers.headoftp.device.adapter.repository", "be.nicholasmeyers.headoftp.participant.adapter.repository"})
 @EnableJpaAuditing
 @EnableScheduling
 public class Application {

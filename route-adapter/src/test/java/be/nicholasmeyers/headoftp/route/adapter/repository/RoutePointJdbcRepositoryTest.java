@@ -1,5 +1,6 @@
 package be.nicholasmeyers.headoftp.route.adapter.repository;
 
+import be.nicholasmeyers.headoftp.route.projection.RoutePointDeviceProjection;
 import be.nicholasmeyers.headoftp.route.projection.RoutePointProjection;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -7,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import static be.nicholasmeyers.headoftp.route.projection.Vehicle.BIKE;
+import static be.nicholasmeyers.headoftp.route.projection.Vehicle.CAR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DatabaseTest
@@ -29,8 +33,84 @@ public class RoutePointJdbcRepositoryTest {
             List<RoutePointProjection> routePoints = routePointJdbcRepository.findAllRoutePointsByRouteId(routeId);
 
             // Then
-            assertThat(routePoints).containsExactly(new RoutePointProjection(34.4, 55.9, 90.5));
+            assertThat(routePoints).containsExactly(new RoutePointProjection(34.4, 55.9, 90.5, 40002));
 
+        }
+    }
+
+    @Sql(value = "route.sql")
+    @Nested
+    class FindRoutePointByRouteIdAndMetersOnRoute {
+        @Test
+        void givenRouteIdAndMeters_whenFindRoutePointByRouteIdAndMetersOnRoute_thenReturnRoutePoint() {
+            // Given
+            UUID routeId = UUID.fromString("e0483c47-0aa0-442d-808b-8897687f4af2");
+            Integer meters = 40000;
+
+            // When
+            Optional<RoutePointProjection> routePoint = routePointJdbcRepository.findRoutePointByRouteIdAndMetersOnRoute(routeId, meters);
+
+            // Then
+            assertThat(routePoint).contains(new RoutePointProjection(34.4, 55.9, 90.5, 40002));
+        }
+
+        @Test
+        void givenRouteIdAndMeters_whenFindRoutePointByRouteIdAndMetersOnRoute_thenReturnEmptyRoutePoint() {
+            // Given
+            UUID routeId = UUID.fromString("e0483c47-0aa0-442d-808b-8897687f4af2");
+            Integer meters = 50000;
+
+            // When
+            Optional<RoutePointProjection> routePoint = routePointJdbcRepository.findRoutePointByRouteIdAndMetersOnRoute(routeId, meters);
+
+            // Then
+            assertThat(routePoint).isEmpty();
+        }
+    }
+
+    @Sql(value = "device.sql")
+    @Nested
+    class FindLastRoutePointByParticipantId {
+        @Test
+        void givenParticipantId_whenFindLastRoutePointByParticipantId_thenReturnLastRoutePoint() {
+            // Given
+            UUID participantId = UUID.fromString("33333333-3333-3333-3333-333333333333");
+
+            // When
+            Optional<RoutePointProjection> lastRoutePoint = routePointJdbcRepository.findLastRoutePointByParticipantId(participantId);
+
+            // Then
+            assertThat(lastRoutePoint).contains(new RoutePointProjection(37.7749, -122.4194, 10.0, 0));
+        }
+
+        @Test
+        void givenParticipantId_whenFindLastRoutePointByParticipantId_thenReturnEmptyOptional() {
+            // Given
+            UUID participantId = UUID.randomUUID();
+
+            // When
+            Optional<RoutePointProjection> lastRoutePoint = routePointJdbcRepository.findLastRoutePointByParticipantId(participantId);
+
+            // Then
+            assertThat(lastRoutePoint).isEmpty();
+        }
+    }
+
+    @Sql(value = "device.sql")
+    @Nested
+    class FindLastRoutePointOfEveryDevice {
+        @Test
+        void given_whenFindLastRoutePointOfEveryDevice_thenReturnListOfLastRoutePoints() {
+            // Given
+
+            // When
+            List<RoutePointDeviceProjection> routePoints = routePointJdbcRepository.findLastRoutePointOfEveryDevice();
+
+            // Then
+            assertThat(routePoints).containsExactly(
+                    new RoutePointDeviceProjection("DEVICE001", 37.7749, -122.4194, CAR),
+                    new RoutePointDeviceProjection("DEVICE002", 40.7128, -74.006, BIKE)
+            );
         }
     }
 }

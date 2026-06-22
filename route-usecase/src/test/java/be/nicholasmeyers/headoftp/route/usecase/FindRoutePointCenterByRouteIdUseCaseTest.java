@@ -33,9 +33,9 @@ public class FindRoutePointCenterByRouteIdUseCaseTest {
             // Given
             UUID routeId = UUID.randomUUID();
 
-            RoutePointProjection routePointProjection1 =  new RoutePointProjection(50.8467, 4.3499, 12.3);
-            RoutePointProjection routePointProjection2 = new RoutePointProjection(50.8798, 4.7005, 12.4);
-            RoutePointProjection routePointProjection3 = new RoutePointProjection(51.0250, 4.4776, 12.7);
+            RoutePointProjection routePointProjection1 =  new RoutePointProjection(50.8467, 4.3499, 12.3, 10);
+            RoutePointProjection routePointProjection2 = new RoutePointProjection(50.8798, 4.7005, 12.4, 11);
+            RoutePointProjection routePointProjection3 = new RoutePointProjection(51.0250, 4.4776, 12.7, 12);
 
             when(routePointQueryRepository.findAllRoutePointsByRouteId(any(UUID.class)))
                     .thenReturn(List.of(routePointProjection1, routePointProjection2, routePointProjection3));
@@ -44,7 +44,7 @@ public class FindRoutePointCenterByRouteIdUseCaseTest {
             Optional<RoutePointProjection> routePointCenter = findRoutePointCenterByRouteIdUseCase.findRoutePointCenterByRouteId(routeId);
 
             // Then
-            RoutePointProjection expectedRoutePoint = new RoutePointProjection(50.91716666666667, 4.509333333333333, 0.0);
+            RoutePointProjection expectedRoutePoint = new RoutePointProjection(50.91716666666667, 4.509333333333333, 0.0, 0);
 
             assertThat(routePointCenter).isPresent();
             assertThat(routePointCenter.get()).isEqualTo(expectedRoutePoint);

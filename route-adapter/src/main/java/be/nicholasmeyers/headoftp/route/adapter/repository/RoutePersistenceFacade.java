@@ -2,6 +2,7 @@ package be.nicholasmeyers.headoftp.route.adapter.repository;
 
 import be.nicholasmeyers.headoftp.route.domain.Route;
 import be.nicholasmeyers.headoftp.route.repository.RouteRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -10,12 +11,14 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional
 public class RoutePersistenceFacade implements RouteRepository {
 
     private final RouteJpaRepository routeJpaRepository;
     private final RoutePointJpaRepository routePointJpaRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Route> findRouteByRouteId(UUID routeId) {
         return routeJpaRepository.findById(routeId).map(RouteJpaEntity::toDomainObject);
     }
@@ -25,8 +28,8 @@ public class RoutePersistenceFacade implements RouteRepository {
         RouteJpaEntity routeJpaEntity = new RouteJpaEntity(route);
         routeJpaRepository.saveAndFlush(routeJpaEntity);
 
-        route.getPoints().forEach(routePoints -> {
-            RoutePointJpaEntity routePointJpaEntity = new RoutePointJpaEntity(routeJpaEntity.getId(), routePoints);
+        route.getPoints().forEach(routePoint -> {
+            RoutePointJpaEntity routePointJpaEntity = new RoutePointJpaEntity(routeJpaEntity.getId(), routePoint);
             routePointJpaRepository.save(routePointJpaEntity);
         });
 

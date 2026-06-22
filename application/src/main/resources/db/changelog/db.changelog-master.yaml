@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/db.changelog-device.yaml
   - include:
       file: db/changelog/db.changelog-route.yaml
+  - include:
+      file: db/changelog/db.changelog-participant.yaml

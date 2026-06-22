@@ -41,7 +41,7 @@ public class Route {
         this.points = createRouteRequest.points();
         this.elevationGain = calculateElevationGain(createRouteRequest.points());
         this.estimatedAverageSpeed = AVERAGE_SPEED;
-        this.distanceInMeters = calculateTotalDistanceInMeters(createRouteRequest.points());
+        this.distanceInMeters = calculateTotalDistanceInMetersAndSetCumulativeDistances(createRouteRequest.points());
         this.durationInMinutes = (int) Math.round((distanceInMeters / 1000.0) / estimatedAverageSpeed * 60.0);
         this.estimatedStartTime = LocalDateTime.of(LocalDate.now(), LocalTime.NOON);
         this.estimatedEndTime = this.estimatedStartTime.plusMinutes(durationInMinutes);
@@ -87,14 +87,16 @@ public class Route {
         return (int) Math.round(elevationGain);
     }
 
-    private int calculateTotalDistanceInMeters(List<RoutePoint> points) {
+    private int calculateTotalDistanceInMetersAndSetCumulativeDistances(List<RoutePoint> points) {
         if (points == null || points.isEmpty()) {
             return 0;
         }
         double totalDistance = 0.0;
+        points.getFirst().setDistanceFromStartInMeter(0);
 
         for (int i = 1; i < points.size(); i++) {
             totalDistance += haversine(points.get(i - 1), points.get(i));
+            points.get(i).setDistanceFromStartInMeter((int) Math.round(totalDistance));
         }
 
         return (int) Math.round(totalDistance);
