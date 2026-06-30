@@ -234,6 +234,10 @@ components:
           example: 24.6
     PatchRouteRequest:
       type: object
+      required:
+        - estimatedAverageSpeed
+        - estimatedStartTime
+        - pauseInMinutes
       properties:
         estimatedAverageSpeed:
           type: number
