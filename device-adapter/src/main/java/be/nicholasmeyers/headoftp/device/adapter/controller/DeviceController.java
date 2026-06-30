@@ -2,6 +2,7 @@ package be.nicholasmeyers.headoftp.device.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.device.adapter.resource.CreateDeviceLocationRequestResource;
+import be.nicholasmeyers.headoftp.device.adapter.resource.CreateDeviceLocationV2RequestResource;
 import be.nicholasmeyers.headoftp.device.adapter.resource.DeviceResponseResource;
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
@@ -37,7 +38,7 @@ public class DeviceController implements DeviceApi {
 
     @Override
     public ResponseEntity<Void> createDeviceLocation(CreateDeviceLocationRequestResource createDeviceLocationRequestResource) {
-        log.info(createDeviceLocationRequestResource.toString());
+        log.info("Received device location request");
         String id = createDeviceLocationRequestResource.getDeviceId();
         if (id != null && id.length() > MAX_ID_LENGTH) {
             id = id.substring(0, MAX_ID_LENGTH);
@@ -68,6 +69,7 @@ public class DeviceController implements DeviceApi {
     public ResponseEntity<Void> createDeviceLocationOld(String id, String timestamp, String lat, String lon, String speed, String bearing,
                                                         String altitude, String accuracy, String batt) {
 
+        log.warn("Received old device location request");
         if (id != null && id.length() > MAX_ID_LENGTH) {
             id = id.substring(0, MAX_ID_LENGTH);
         }
@@ -98,6 +100,30 @@ public class DeviceController implements DeviceApi {
 
         CreateDeviceLocationRequest createDeviceLocationRequest = new CreateDeviceLocationRequest(id, timestampLong, latitude, longitude, speedDouble,
                 bearingDouble, altitudeDouble, accuracyDouble, batteryDouble);
+
+        Notification notification = createDeviceLocationUseCase.createDeviceLocation(createDeviceLocationRequest);
+        if (notification.hasErrors()) {
+            log.error(notification.getErrors().toString());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> createDeviceLocationV2(CreateDeviceLocationV2RequestResource createDeviceLocationV2RequestResource) {
+        String deviceId = createDeviceLocationV2RequestResource.getDeviceId();
+        Instant instant = Instant.parse(createDeviceLocationV2RequestResource.getLocation().getTimestamp());
+        Long timestampLong = instant.toEpochMilli();
+        Double latitude = createDeviceLocationV2RequestResource.getLocation().getCoords().getLatitude();
+        Double longitude = createDeviceLocationV2RequestResource.getLocation().getCoords().getLongitude();
+        Double speed = createDeviceLocationV2RequestResource.getLocation().getCoords().getSpeed();
+        Double heading = createDeviceLocationV2RequestResource.getLocation().getCoords().getBearing();
+        Double altitude = createDeviceLocationV2RequestResource.getLocation().getCoords().getAltitude();
+        Double accuracy = createDeviceLocationV2RequestResource.getLocation().getCoords().getAccuracy();
+        Double battery = createDeviceLocationV2RequestResource.getBattery();
+
+        CreateDeviceLocationRequest createDeviceLocationRequest = new CreateDeviceLocationRequest(deviceId, timestampLong, latitude, longitude, speed,
+                heading, altitude, accuracy, battery);
 
         Notification notification = createDeviceLocationUseCase.createDeviceLocation(createDeviceLocationRequest);
         if (notification.hasErrors()) {
