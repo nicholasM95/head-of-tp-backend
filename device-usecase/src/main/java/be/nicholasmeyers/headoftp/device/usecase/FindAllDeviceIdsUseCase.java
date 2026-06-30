@@ -1,5 +1,6 @@
 package be.nicholasmeyers.headoftp.device.usecase;
 
+import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.repository.DeviceLocationQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +13,8 @@ public class FindAllDeviceIdsUseCase {
 
     private final DeviceLocationQueryRepository deviceLocationQueryRepository;
 
-    public List<String> findAllDeviceIds() {
+    public List<DeviceProjection> findAllDeviceIds() {
         log.info("Finding all device ids");
-        return deviceLocationQueryRepository.findAllDeviceIds();
+        return deviceLocationQueryRepository.findAllDevices();
     }
 }

@@ -5,6 +5,7 @@ import be.nicholasmeyers.headoftp.device.adapter.resource.CreateDeviceLocationRe
 import be.nicholasmeyers.headoftp.device.adapter.resource.CreateDeviceLocationV2RequestResource;
 import be.nicholasmeyers.headoftp.device.adapter.resource.DeviceResponseResource;
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
+import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
 import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +29,8 @@ import java.util.Optional;
 public class DeviceController implements DeviceApi {
 
     private static final int MAX_ID_LENGTH = 20;
+    private static final ZoneId ZONE_ID_BRUSSELS = ZoneId.of("Europe/Brussels");
+
     private final CreateDeviceLocationUseCase  createDeviceLocationUseCase;
     private final FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
 
@@ -135,6 +140,11 @@ public class DeviceController implements DeviceApi {
 
     @Override
     public ResponseEntity<List<DeviceResponseResource>> findAllDevices() {
-        return ResponseEntity.ok(findAllDeviceIdsUseCase.findAllDeviceIds().stream().map(DeviceResponseResource::new).toList());
+        return ResponseEntity.ok(findAllDeviceIdsUseCase.findAllDeviceIds().stream().map(this::toDeviceResponseResource).toList());
+    }
+
+    private DeviceResponseResource toDeviceResponseResource(DeviceProjection projection) {
+        OffsetDateTime lastModifiedDateLocation = projection.lastModifiedDateLocation().atZone(ZONE_ID_BRUSSELS).toOffsetDateTime();
+        return new DeviceResponseResource(projection.deviceId(), lastModifiedDateLocation.toLocalDateTime());
     }
 }

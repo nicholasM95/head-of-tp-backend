@@ -244,10 +244,14 @@ components:
     DeviceResponse:
       required:
         - id
+        - lastModifiedDateLocation
       properties:
         id:
           type: string
           example: 72839
+        lastModifiedDateLocation:
+          type: string
+          format: date-time
     ProblemDetailResponse:
       required:
         - title

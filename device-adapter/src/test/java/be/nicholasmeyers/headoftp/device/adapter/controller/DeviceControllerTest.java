@@ -2,6 +2,7 @@ package be.nicholasmeyers.headoftp.device.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
+import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
 import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
 import org.junit.jupiter.api.Nested;
@@ -14,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -375,15 +377,19 @@ public class DeviceControllerTest {
         @Test
         void givenDeviceLocationParams_whenGetDeviceLocation_thenSuccess() throws Exception {
             // Given
-            when(findAllDeviceIdsUseCase.findAllDeviceIds()).thenReturn(List.of("484897", "56846"));
+            when(findAllDeviceIdsUseCase.findAllDeviceIds()).thenReturn(List.of(
+                    new DeviceProjection("484897", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000)),
+                    new DeviceProjection("56846", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000))));
 
             // When & Then
             String expectedResponse = """
             [
               {
-                "id": "484897"
+                "id": "484897",
+                "lastModifiedDateLocation": "2025-07-08T23:01:53.561"
               },{
-                "id": "56846"
+                "id": "56846",
+                "lastModifiedDateLocation": "2025-07-08T23:01:53.561"
               }
             ]
             """;
