@@ -104,6 +104,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DeviceResponse'
+  /device/{deviceId}:
+    get:
+      tags:
+        - device
+      operationId: findDeviceById
+      summary: Find a device by device id
+      parameters:
+        - in: path
+          name: deviceId
+          schema:
+            type: string
+          required: true
+          description: device id
+      responses:
+        200:
+          description: Device successfully found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+        404:
+          description: Device not found
   /device/location:
     post:
       tags:

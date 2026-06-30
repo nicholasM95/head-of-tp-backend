@@ -5,6 +5,7 @@ import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
 import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
 import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
+import be.nicholasmeyers.headoftp.device.usecase.FindDeviceByIdUseCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,6 +42,9 @@ public class DeviceControllerTest {
 
     @MockitoBean
     private FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
+
+    @MockitoBean
+    private FindDeviceByIdUseCase findDeviceByIdUseCase;
 
     @Nested
     class CreateDeviceLocationOld {
@@ -369,6 +374,38 @@ public class DeviceControllerTest {
             ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
             verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());
             assertThat(actual.getValue()).isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    class FindDeviceById {
+        @Test
+        void givenExistingDeviceId_whenFindDeviceById_thenReturnDevice() throws Exception {
+            // Given
+            when(findDeviceByIdUseCase.findDeviceById("484897"))
+                    .thenReturn(Optional.of(new DeviceProjection("484897", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000))));
+
+            // When & Then
+            String expectedResponse = """
+                    {
+                      "id": "484897",
+                      "lastModifiedDateLocation": "2025-07-08T23:01:53.561"
+                    }
+                    """;
+
+            mockMvc.perform(get("/device/{deviceId}", "484897"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(expectedResponse, STRICT));
+        }
+
+        @Test
+        void givenUnknownDeviceId_whenFindDeviceById_thenReturn404() throws Exception {
+            // Given
+            when(findDeviceByIdUseCase.findDeviceById("unknown")).thenReturn(Optional.empty());
+
+            // When & Then
+            mockMvc.perform(get("/device/{deviceId}", "unknown"))
+                    .andExpect(status().isNotFound());
         }
     }
 

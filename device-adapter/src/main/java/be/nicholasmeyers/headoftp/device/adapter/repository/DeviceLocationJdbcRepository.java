@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -20,5 +21,13 @@ public class DeviceLocationJdbcRepository implements DeviceLocationQueryReposito
 
         return template.query(query, Map.of(), (rs, rowNum) ->
                 new DeviceProjection(rs.getString("device_id"), rs.getTimestamp("last_modified_date_location").toLocalDateTime()));
+    }
+
+    public Optional<DeviceProjection> findDeviceById(String deviceId) {
+        String query = "SELECT device_id, MAX(created_date) AS last_modified_date_location FROM device_location WHERE device_id = :deviceId GROUP BY device_id";
+
+        return template.query(query, Map.of("deviceId", deviceId), (rs, rowNum) ->
+                new DeviceProjection(rs.getString("device_id"), rs.getTimestamp("last_modified_date_location").toLocalDateTime()))
+                .stream().findFirst();
     }
 }

@@ -8,6 +8,7 @@ import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
 import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
 import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
+import be.nicholasmeyers.headoftp.device.usecase.FindDeviceByIdUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ public class DeviceController implements DeviceApi {
 
     private final CreateDeviceLocationUseCase  createDeviceLocationUseCase;
     private final FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
+    private final FindDeviceByIdUseCase findDeviceByIdUseCase;
 
     @PostMapping(value = "/device", consumes = "application/x-www-form-urlencoded")
     public ResponseEntity<Void> createDeviceLocationNotificationToken(@RequestParam("id") String id,
@@ -141,6 +143,14 @@ public class DeviceController implements DeviceApi {
     @Override
     public ResponseEntity<List<DeviceResponseResource>> findAllDevices() {
         return ResponseEntity.ok(findAllDeviceIdsUseCase.findAllDeviceIds().stream().map(this::toDeviceResponseResource).toList());
+    }
+
+    @Override
+    public ResponseEntity<DeviceResponseResource> findDeviceById(String deviceId) {
+        return findDeviceByIdUseCase.findDeviceById(deviceId)
+                .map(this::toDeviceResponseResource)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     private DeviceResponseResource toDeviceResponseResource(DeviceProjection projection) {
