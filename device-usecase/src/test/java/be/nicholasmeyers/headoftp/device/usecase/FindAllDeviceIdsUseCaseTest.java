@@ -1,5 +1,6 @@
 package be.nicholasmeyers.headoftp.device.usecase;
 
+import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.repository.DeviceLocationQueryRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,15 +27,16 @@ public class FindAllDeviceIdsUseCaseTest {
     @Nested
     class FindAllDeviceIds {
         @Test
-        void given_whenFindAllDeviceIds_thenReturnListOfDeviceIds() {
+        void given_whenFindAllDeviceIds_thenReturnListOfDevices() {
             // Given
-            when(deviceLocationQueryRepository.findAllDeviceIds()).thenReturn(List.of("234", "654"));
+            List<DeviceProjection> projections = List.of(new DeviceProjection("234", LocalDateTime.now()), new DeviceProjection("654", LocalDateTime.now()));
+            when(deviceLocationQueryRepository.findAllDevices()).thenReturn(projections);
 
             // When
-            List<String> deviceIds = findAllDeviceIdsUseCase.findAllDeviceIds();
+            List<DeviceProjection> result = findAllDeviceIdsUseCase.findAllDeviceIds();
 
             // Then
-            assertThat(deviceIds).containsExactly("234", "654");
+            assertThat(result).containsExactlyElementsOf(projections);
         }
     }
 }

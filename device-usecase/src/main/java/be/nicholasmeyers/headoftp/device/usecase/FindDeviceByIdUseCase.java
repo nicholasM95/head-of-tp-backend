@@ -5,16 +5,16 @@ import be.nicholasmeyers.headoftp.device.repository.DeviceLocationQueryRepositor
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FindAllDeviceIdsUseCase {
+public class FindDeviceByIdUseCase {
 
     private final DeviceLocationQueryRepository deviceLocationQueryRepository;
 
-    public List<DeviceProjection> findAllDeviceIds() {
-        log.info("Finding all device ids");
-        return deviceLocationQueryRepository.findAllDevices();
+    public Optional<DeviceProjection> findDeviceById(String deviceId) {
+        log.info("Finding device by id: {}", deviceId);
+        return deviceLocationQueryRepository.findDeviceById(deviceId);
     }
 }

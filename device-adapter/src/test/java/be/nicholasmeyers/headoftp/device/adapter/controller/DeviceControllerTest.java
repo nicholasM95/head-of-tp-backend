@@ -2,19 +2,23 @@ package be.nicholasmeyers.headoftp.device.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
+import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
 import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
+import be.nicholasmeyers.headoftp.device.usecase.FindDeviceByIdUseCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +42,9 @@ public class DeviceControllerTest {
 
     @MockitoBean
     private FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
+
+    @MockitoBean
+    private FindDeviceByIdUseCase findDeviceByIdUseCase;
 
     @Nested
     class CreateDeviceLocationOld {
@@ -294,19 +301,132 @@ public class DeviceControllerTest {
     }
 
     @Nested
+    class CreateDeviceLocationV2 {
+        @Test
+        void givenDeviceLocationV2_whenCreateDeviceLocationV2_thenSuccess() throws Exception {
+            // Given
+            String request = """
+                    {
+                        "device_id": "484897",
+                        "location": {
+                            "timestamp": "2025-07-08T23:01:53.561Z",
+                            "coords": {
+                                "latitude": 1.2,
+                                "longitude": 99.2,
+                                "accuracy": 99.88,
+                                "speed": 25.6,
+                                "bearing": 9.0,
+                                "altitude": 9900.3
+                            }
+                        },
+                        "battery": 0.78
+                    }
+                    """;
+
+            when(createDeviceLocationUseCase.createDeviceLocation(any(CreateDeviceLocationRequest.class)))
+                    .thenReturn(new Notification());
+
+            // When & Then
+            mockMvc.perform(post("/device/location")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isOk());
+
+            CreateDeviceLocationRequest expected = new CreateDeviceLocationRequest("484897", 1752015713561L, 1.2, 99.2, 25.6, 9.0,
+                    9900.3, 99.88, 0.78);
+            ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
+            verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());
+            assertThat(actual.getValue()).isEqualTo(expected);
+        }
+
+        @Test
+        void givenInvalidDeviceLocationV2_whenCreateDeviceLocationV2_thenSuccess() throws Exception {
+            // Given
+            String request = """
+                    {
+                        "device_id": "484897",
+                        "location": {
+                            "timestamp": "2025-07-08T23:01:53.561Z",
+                            "coords": {
+                                "latitude": 1.2,
+                                "longitude": 99.2,
+                                "accuracy": 99.88,
+                                "speed": 25.6,
+                                "bearing": 9.0,
+                                "altitude": 9900.3
+                            }
+                        },
+                        "battery": 10.0
+                    }
+                    """;
+
+            when(createDeviceLocationUseCase.createDeviceLocation(any(CreateDeviceLocationRequest.class)))
+                    .thenReturn(Notification.of("error"));
+
+            // When & Then
+            mockMvc.perform(post("/device/location")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isOk());
+
+            CreateDeviceLocationRequest expected = new CreateDeviceLocationRequest("484897", 1752015713561L, 1.2, 99.2, 25.6, 9.0,
+                    9900.3, 99.88, 10.0);
+            ArgumentCaptor<CreateDeviceLocationRequest> actual = ArgumentCaptor.forClass(CreateDeviceLocationRequest.class);
+            verify(createDeviceLocationUseCase).createDeviceLocation(actual.capture());
+            assertThat(actual.getValue()).isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    class FindDeviceById {
+        @Test
+        void givenExistingDeviceId_whenFindDeviceById_thenReturnDevice() throws Exception {
+            // Given
+            when(findDeviceByIdUseCase.findDeviceById("484897"))
+                    .thenReturn(Optional.of(new DeviceProjection("484897", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000))));
+
+            // When & Then
+            String expectedResponse = """
+                    {
+                      "id": "484897",
+                      "lastModifiedDateLocation": "2025-07-08T23:01:53.561"
+                    }
+                    """;
+
+            mockMvc.perform(get("/device/{deviceId}", "484897"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(expectedResponse, STRICT));
+        }
+
+        @Test
+        void givenUnknownDeviceId_whenFindDeviceById_thenReturn404() throws Exception {
+            // Given
+            when(findDeviceByIdUseCase.findDeviceById("unknown")).thenReturn(Optional.empty());
+
+            // When & Then
+            mockMvc.perform(get("/device/{deviceId}", "unknown"))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
     class GetDeviceLocation {
         @Test
         void givenDeviceLocationParams_whenGetDeviceLocation_thenSuccess() throws Exception {
             // Given
-            when(findAllDeviceIdsUseCase.findAllDeviceIds()).thenReturn(List.of("484897", "56846"));
+            when(findAllDeviceIdsUseCase.findAllDeviceIds()).thenReturn(List.of(
+                    new DeviceProjection("484897", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000)),
+                    new DeviceProjection("56846", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000))));
 
             // When & Then
             String expectedResponse = """
             [
               {
-                "id": "484897"
+                "id": "484897",
+                "lastModifiedDateLocation": "2025-07-08T23:01:53.561"
               },{
-                "id": "56846"
+                "id": "56846",
+                "lastModifiedDateLocation": "2025-07-08T23:01:53.561"
               }
             ]
             """;

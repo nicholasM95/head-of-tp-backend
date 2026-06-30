@@ -104,6 +104,49 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DeviceResponse'
+  /device/{deviceId}:
+    get:
+      tags:
+        - device
+      operationId: findDeviceById
+      summary: Find a device by device id
+      parameters:
+        - in: path
+          name: deviceId
+          schema:
+            type: string
+          required: true
+          description: device id
+      responses:
+        200:
+          description: Device successfully found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+        404:
+          description: Device not found
+  /device/location:
+    post:
+      tags:
+        - device
+      operationId: createDeviceLocationV2
+      summary: Create a device location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceLocationV2Request'
+      responses:
+        200:
+          description: Device location successfully created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
     CreateDeviceLocationRequest:
@@ -115,6 +158,19 @@ components:
           $ref: '#/components/schemas/DeviceLocation'
         device_id:
           type: string
+    CreateDeviceLocationV2Request:
+      required:
+        - device_id
+        - location
+        - battery
+      properties:
+        device_id:
+          type: string
+        location:
+          $ref: '#/components/schemas/DeviceLocationV2'
+        battery:
+          type: number
+          format: double
     DeviceLocation:
       required:
         - timestamp
@@ -134,6 +190,15 @@ components:
           format: int64
         battery:
           $ref: '#/components/schemas/DeviceLocationBattery'
+    DeviceLocationV2:
+      required:
+        - timestamp
+        - coords
+      properties:
+        timestamp:
+          type: string
+        coords:
+          $ref: '#/components/schemas/DeviceLocationCoordsV2'
     DeviceLocationCoords:
       required:
         - latitude
@@ -161,6 +226,33 @@ components:
         altitude:
           type: number
           format: double
+    DeviceLocationCoordsV2:
+      required:
+        - latitude
+        - longitude
+        - accuracy
+        - speed
+        - bearing
+        - altitude
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        accuracy:
+          type: number
+          format: double
+        speed:
+          type: number
+          format: double
+        bearing:
+          type: number
+          format: double
+        altitude:
+          type: number
+          format: double
     DeviceLocationBattery:
       required:
         - level
@@ -174,10 +266,14 @@ components:
     DeviceResponse:
       required:
         - id
+        - lastModifiedDateLocation
       properties:
         id:
           type: string
           example: 72839
+        lastModifiedDateLocation:
+          type: string
+          format: date-time
     ProblemDetailResponse:
       required:
         - title

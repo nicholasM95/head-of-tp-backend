@@ -35,7 +35,11 @@ public class SendRouteMarkerUseCase {
         routes.forEach(route -> {
             routeMarkers.add(createRouteMarkerGhost(route));
             devices.forEach(device -> {
-                routeMarkers.add(new RouteMarkerProjection(route.id(), device.deviceId(), device.latitude(), device.longitude(), MarkerType.valueOf(device.vehicle().name())));
+                if (device.deviceId().equals("NM7832842")) {
+                    routeMarkers.add(new RouteMarkerProjection(route.id(), device.deviceId(), device.latitude(), device.longitude(), MarkerType.HEAD_OF_TP));
+                } else {
+                    routeMarkers.add(new RouteMarkerProjection(route.id(), device.deviceId(), device.latitude(), device.longitude(), MarkerType.valueOf(device.vehicle().name())));
+                }
             });
         });
         locationEventSender.sendLocationEvent(routeMarkers);

@@ -6,7 +6,7 @@
     <parent>
         <groupId>be.nicholasmeyers</groupId>
         <artifactId>head-of-tp</artifactId>
-        <version>1.1.1</version>
+        <version>1.2.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>route-adapter</artifactId>
@@ -14,22 +14,8 @@
     <name>route-adapter</name>
     <description>route-adapter</description>
 
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
-
     <properties>
-        <java.version>24</java.version>
+        <java.version>25</java.version>
         <jpx.version>3.2.1</jpx.version>
         <tika.version>3.3.1</tika.version>
     </properties>
@@ -37,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
 
         <dependency>
@@ -81,18 +67,18 @@
         <dependency>
             <groupId>io.swagger.parser.v3</groupId>
             <artifactId>swagger-parser</artifactId>
-            <version>2.1.30</version>
+            <version>2.1.45</version>
         </dependency>
 
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.6</version>
+            <version>0.2.10</version>
         </dependency>
 
         <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-liquibase</artifactId>
         </dependency>
 
         <dependency>
@@ -103,7 +89,13 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -115,13 +107,13 @@
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
+            <artifactId>testcontainers-postgresql</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -145,7 +137,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.14.0</version>
+                <version>7.23.0</version>
                 <executions>
                     <execution>
                         <id>route</id>
@@ -169,7 +161,8 @@
                                 <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
                                 <requestMappingMode>none</requestMappingMode>
                                 <skipDefaultInterface>true</skipDefaultInterface>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useSpringBoot4>true</useSpringBoot4>
+                                <useJackson3>true</useJackson3>
                                 <unhandledException>true</unhandledException>
                                 <useTags>true</useTags>
                             </configOptions>
