@@ -1,3 +1,21 @@
+# [1.2.0](https://github.com/nicholasM95/head-of-tp-backend/compare/v1.1.1...v1.2.0) (2026-06-30)
+
+
+### Features
+
+* add  endpoint with updated request handling and OpenAPI integration ([9d0ec67](https://github.com/nicholasM95/head-of-tp-backend/commit/9d0ec678fe5e3491ff87d9f7d44c3fe68f5bf381))
+* add  marker type and conditional route marker creation for specific device; update Java version to 25 in CI ([dcb4652](https://github.com/nicholasM95/head-of-tp-backend/commit/dcb4652d29ba6922495b59f1088a001057a3b1f8))
+* add DeviceProjection for device data, update repository methods and endpoints to return detailed device info ([d85c882](https://github.com/nicholasM95/head-of-tp-backend/commit/d85c8824f6f3e5e8340580d4963cccc0000ed15f))
+* implement FindDeviceByIdUseCase and update controller, repository, and tests to support device lookup by ID ([da03df9](https://github.com/nicholasM95/head-of-tp-backend/commit/da03df9f349ea2a1b7a0eac3f01cb29b7844160f))
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.swagger.parser.v3:swagger-parser to v2.1.45 ([3c754e6](https://github.com/nicholasM95/head-of-tp-backend/commit/3c754e6635f8e26ef5ba273b4c43c4a7435ab339))
+* **deps:** update dependency org.openapitools:jackson-databind-nullable to v0.2.10 ([b795c5e](https://github.com/nicholasM95/head-of-tp-backend/commit/b795c5ecf34d72ba990b59412c5cc513f13b2486))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.5.16 ([6e2fd8a](https://github.com/nicholasM95/head-of-tp-backend/commit/6e2fd8af81ad25900b3bb3f7f37ac9cac31a0089))
+* **deps:** update dependency org.springframework.cloud:spring-cloud-dependencies to v2025.1.2 ([9f733e8](https://github.com/nicholasM95/head-of-tp-backend/commit/9f733e893d0478340f8f8307a9fdb9322925128e))
+
 ## [1.1.1](https://github.com/nicholasM95/head-of-tp-backend/compare/v1.1.0...v1.1.1) (2026-06-22)
 
 
