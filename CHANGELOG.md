@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/nicholasM95/head-of-tp-backend/compare/v1.1.0...v1.1.1) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.tika:tika-core to v3.3.1 ([63baf77](https://github.com/nicholasM95/head-of-tp-backend/commit/63baf771268c4290460157e8586304372f7e3e0e))
+
 # [1.1.0](https://github.com/nicholasM95/head-of-tp-backend/compare/v1.0.2...v1.1.0) (2026-06-22)
 
 
