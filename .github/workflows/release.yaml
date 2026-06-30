@@ -13,7 +13,7 @@ concurrency:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  JAVA_VERSION: '24'
+  JAVA_VERSION: '25'
   NODE_VERSION: '23'
   REGISTRY: ghcr.io
   IMAGE_NAME: nicholasm95/head-of-tp-backend
