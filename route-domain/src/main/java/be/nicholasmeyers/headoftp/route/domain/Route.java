@@ -10,6 +10,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,12 +22,17 @@ public class Route {
     private static final double AVERAGE_SPEED = 28.0;
     private static final double EARTH_RADIUS_IN_METERS = 6371000;
     private static final int DEFAULT_PAUSE_IN_MINUTES = 0;
+    private static final double MIN_CLIMB_AVERAGE_GRADIENT_PERCENT = 3.0;
+    private static final int MIN_CLIMB_LENGTH_IN_METER = 500;
+    private static final double CLIMB_DESCENT_TOLERANCE_IN_METER = 10.0;
+    private static final int ALTITUDE_SMOOTHING_WINDOW = 5;
 
 
     private UUID id;
     private final String name;
     private final List<RoutePoint> points;
     private final Integer elevationGain;
+    private final List<RouteClimb> climbs;
     private Double estimatedAverageSpeed;
     private final Integer distanceInMeters;
     private Integer durationInMinutes;
@@ -42,6 +48,7 @@ public class Route {
         this.elevationGain = calculateElevationGain(createRouteRequest.points());
         this.estimatedAverageSpeed = AVERAGE_SPEED;
         this.distanceInMeters = calculateTotalDistanceInMetersAndSetCumulativeDistances(createRouteRequest.points());
+        this.climbs = calculateClimbs(createRouteRequest.points());
         this.durationInMinutes = (int) Math.round((distanceInMeters / 1000.0) / estimatedAverageSpeed * 60.0);
         this.estimatedStartTime = LocalDateTime.of(LocalDate.now(), LocalTime.NOON);
         this.estimatedEndTime = this.estimatedStartTime.plusMinutes(durationInMinutes);
@@ -100,6 +107,78 @@ public class Route {
         }
 
         return (int) Math.round(totalDistance);
+    }
+
+    private List<RouteClimb> calculateClimbs(List<RoutePoint> points) {
+        if (points == null || points.size() < 2) {
+            return List.of();
+        }
+
+        double[] smoothedAltitude = smoothAltitude(points);
+        List<RouteClimb> climbs = new ArrayList<>();
+
+        Integer climbStartIndex = null;
+        int peakIndex = 0;
+        double descentSincePeak = 0.0;
+
+        for (int i = 1; i < points.size(); i++) {
+            double delta = smoothedAltitude[i] - smoothedAltitude[i - 1];
+            if (delta > 0) {
+                if (climbStartIndex == null) {
+                    climbStartIndex = i - 1;
+                }
+                peakIndex = i;
+                descentSincePeak = 0.0;
+            } else if (climbStartIndex != null) {
+                descentSincePeak += -delta;
+                if (descentSincePeak > CLIMB_DESCENT_TOLERANCE_IN_METER) {
+                    addClimbIfSignificant(climbs, points, climbStartIndex, peakIndex);
+                    climbStartIndex = null;
+                }
+            }
+        }
+
+        if (climbStartIndex != null) {
+            addClimbIfSignificant(climbs, points, climbStartIndex, peakIndex);
+        }
+
+        return climbs;
+    }
+
+    private double[] smoothAltitude(List<RoutePoint> points) {
+        int size = points.size();
+        double[] smoothed = new double[size];
+        int halfWindow = ALTITUDE_SMOOTHING_WINDOW / 2;
+
+        for (int i = 0; i < size; i++) {
+            int from = Math.max(0, i - halfWindow);
+            int to = Math.min(size - 1, i + halfWindow);
+            double sum = 0.0;
+            for (int j = from; j <= to; j++) {
+                sum += points.get(j).getAltitude();
+            }
+            smoothed[i] = sum / (to - from + 1);
+        }
+
+        return smoothed;
+    }
+
+    private void addClimbIfSignificant(List<RouteClimb> climbs, List<RoutePoint> points, int startIndex, int endIndex) {
+        int startDistanceInMeter = points.get(startIndex).getDistanceFromStartInMeter();
+        int endDistanceInMeter = points.get(endIndex).getDistanceFromStartInMeter();
+        int lengthInMeter = endDistanceInMeter - startDistanceInMeter;
+        if (lengthInMeter < MIN_CLIMB_LENGTH_IN_METER) {
+            return;
+        }
+
+        double elevationGainInMeter = points.get(endIndex).getAltitude() - points.get(startIndex).getAltitude();
+        double averageGradient = (elevationGainInMeter / lengthInMeter) * 100.0;
+        if (averageGradient < MIN_CLIMB_AVERAGE_GRADIENT_PERCENT) {
+            return;
+        }
+
+        climbs.add(new RouteClimb(startDistanceInMeter, endDistanceInMeter, lengthInMeter,
+                (int) Math.round(elevationGainInMeter), Math.round(averageGradient * 10.0) / 10.0));
     }
 
     private double haversine(RoutePoint p1, RoutePoint p2) {

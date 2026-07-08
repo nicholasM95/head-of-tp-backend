@@ -105,6 +105,10 @@ public class RoutePersistenceFacadeTest {
             assertThat(resultRoutePoint.get("distance_from_start_in_meter")).isEqualTo(0);
             assertThat(resultRoutePoint.get("created_date")).isNotNull();
             assertThat(resultRoutePoint.get("last_modified_date")).isNotNull();
+
+            String sqlRouteClimbCount = "SELECT COUNT(id) FROM route_climb";
+            Long resultRouteClimbCount = jdbcTemplate.queryForObject(sqlRouteClimbCount, Long.class);
+            assertThat(resultRouteClimbCount).isEqualTo(0L);
         }
     }
 
@@ -129,6 +133,11 @@ public class RoutePersistenceFacadeTest {
             Long resultRoutePoint = jdbcTemplate.queryForObject(sqlRoutePoint, Long.class);
             assertThat(resultRoutePoint).isNotNull();
             assertThat(resultRoutePoint).isEqualTo(0L);
+
+            String sqlRouteClimb = "SELECT COUNT(id) FROM route_climb WHERE route_id = 'e0483c47-0aa0-442d-808b-8897687f4af2'";
+            Long resultRouteClimb = jdbcTemplate.queryForObject(sqlRouteClimb, Long.class);
+            assertThat(resultRouteClimb).isNotNull();
+            assertThat(resultRouteClimb).isEqualTo(0L);
         }
     }
 

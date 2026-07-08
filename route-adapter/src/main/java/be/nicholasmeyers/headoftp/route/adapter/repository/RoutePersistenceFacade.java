@@ -16,6 +16,7 @@ public class RoutePersistenceFacade implements RouteRepository {
 
     private final RouteJpaRepository routeJpaRepository;
     private final RoutePointJpaRepository routePointJpaRepository;
+    private final RouteClimbJpaRepository routeClimbJpaRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -34,11 +35,21 @@ public class RoutePersistenceFacade implements RouteRepository {
         });
 
         routePointJpaRepository.flush();
+
+        route.getClimbs().forEach(routeClimb -> {
+            RouteClimbJpaEntity routeClimbJpaEntity = new RouteClimbJpaEntity(routeJpaEntity.getId(), routeClimb);
+            routeClimbJpaRepository.save(routeClimbJpaEntity);
+        });
+
+        routeClimbJpaRepository.flush();
     }
 
     @Override
     public void deleteRouteByRouteId(UUID routeId) {
         routePointJpaRepository.deleteByRouteId(routeId);
+        routeJpaRepository.flush();
+
+        routeClimbJpaRepository.deleteByRouteId(routeId);
         routeJpaRepository.flush();
 
         routeJpaRepository.deleteById(routeId);

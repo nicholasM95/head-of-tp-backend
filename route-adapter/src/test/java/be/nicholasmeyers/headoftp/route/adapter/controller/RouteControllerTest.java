@@ -2,10 +2,12 @@ package be.nicholasmeyers.headoftp.route.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.route.domain.CreateRoutePointRequest;
+import be.nicholasmeyers.headoftp.route.projection.RouteClimbProjection;
 import be.nicholasmeyers.headoftp.route.projection.RoutePointProjection;
 import be.nicholasmeyers.headoftp.route.projection.RouteProjection;
 import be.nicholasmeyers.headoftp.route.usecase.CreateRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.DeleteRouteUseCase;
+import be.nicholasmeyers.headoftp.route.usecase.FindAllRouteClimbsByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutePointsByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutesUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindRoutePointCenterByRouteIdUseCase;
@@ -70,6 +72,9 @@ public class RouteControllerTest {
 
     @MockitoBean
     private FindAllRoutePointsByRouteIdUseCase findAllRoutePointsByRouteIdUseCase;
+
+    @MockitoBean
+    private FindAllRouteClimbsByRouteIdUseCase findAllRouteClimbsByRouteIdUseCase;
 
     @MockitoBean
     private FindRoutePointCenterByRouteIdUseCase findRoutePointCenterByRouteIdUseCase;
@@ -252,12 +257,14 @@ public class RouteControllerTest {
                       {
                         "latitude": 54.5,
                         "longitude": 90.1,
-                        "altitude": 12.2
+                        "altitude": 12.2,
+                        "distanceFromStartInMeter": 12
                       },
                       {
                         "latitude": 54.6,
                         "longitude": 91.6,
-                        "altitude": 12.7
+                        "altitude": 12.7,
+                        "distanceFromStartInMeter": 13
                       }
                     ]
                     """;
@@ -268,6 +275,46 @@ public class RouteControllerTest {
                     .andExpect(content().json(expectedResponse, STRICT));
 
             verify(findAllRoutePointsByRouteIdUseCase).findAllRoutePointsByRouteId(UUID.fromString("03d3c4ee-cb56-44f8-935b-d360a0432e85"));
+        }
+    }
+
+    @Nested
+    class GetRouteClimbByRouteId {
+        @Test
+        void givenRouteClimbs_whenGetRouteClimbByRouteId_thenReturnRouteClimbs() throws Exception {
+            // Given
+            RouteClimbProjection routeClimbProjection1 = new RouteClimbProjection(4000, 5500, 1500, 120, 8.0);
+            RouteClimbProjection routeClimbProjection2 = new RouteClimbProjection(9000, 10200, 1200, 60, 5.0);
+
+            when(findAllRouteClimbsByRouteIdUseCase.findAllRouteClimbsByRouteId(any(UUID.class)))
+                    .thenReturn(List.of(routeClimbProjection1, routeClimbProjection2));
+
+            // When & Then
+            String expectedResponse = """
+                    [
+                      {
+                        "startDistanceInMeter": 4000,
+                        "endDistanceInMeter": 5500,
+                        "lengthInMeter": 1500,
+                        "elevationGainInMeter": 120,
+                        "averageGradient": 8.0
+                      },
+                      {
+                        "startDistanceInMeter": 9000,
+                        "endDistanceInMeter": 10200,
+                        "lengthInMeter": 1200,
+                        "elevationGainInMeter": 60,
+                        "averageGradient": 5.0
+                      }
+                    ]
+                    """;
+
+            mockMvc.perform(get("/route-climb/{routeId}", "03d3c4ee-cb56-44f8-935b-d360a0432e85")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(expectedResponse, STRICT));
+
+            verify(findAllRouteClimbsByRouteIdUseCase).findAllRouteClimbsByRouteId(UUID.fromString("03d3c4ee-cb56-44f8-935b-d360a0432e85"));
         }
     }
 
@@ -285,7 +332,8 @@ public class RouteControllerTest {
                     {
                       "latitude": 54.6,
                       "longitude": 91.6,
-                      "altitude": 12.3
+                      "altitude": 12.3,
+                      "distanceFromStartInMeter": 40
                     }
                     """;
 
@@ -308,7 +356,8 @@ public class RouteControllerTest {
                     {
                       "latitude": 50.8467,
                       "longitude": 4.3499,
-                      "altitude": 0.0
+                      "altitude": 0.0,
+                      "distanceFromStartInMeter": 0
                     }
                     """;
 

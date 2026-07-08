@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-route_climb
+      comment: create-table-route_climb
+      author: nicholasmeyers
+      changes:
+        - createTable:
+            tableName: route_climb
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: route_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_distance_in_meter
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_distance_in_meter
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: length_in_meter
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: elevation_gain_in_meter
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: average_gradient
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_route_climb_route_id
+            tableName: route_climb
+            columns:
+              - column:
+                  name: route_id
+        - addForeignKeyConstraint:
+            baseTableName: route_climb
+            baseColumnNames: route_id
+            constraintName: fk_route_climb_route
+            referencedTableName: route
+            referencedColumnNames: id

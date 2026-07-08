@@ -2,13 +2,16 @@ package be.nicholasmeyers.headoftp.route.adapter.controller;
 
 import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.route.adapter.resource.PatchRouteRequestResource;
+import be.nicholasmeyers.headoftp.route.adapter.resource.RouteClimbResponseResource;
 import be.nicholasmeyers.headoftp.route.adapter.resource.RoutePointResponseResource;
 import be.nicholasmeyers.headoftp.route.adapter.resource.RouteResponseResource;
 import be.nicholasmeyers.headoftp.route.domain.CreateRoutePointRequest;
+import be.nicholasmeyers.headoftp.route.projection.RouteClimbProjection;
 import be.nicholasmeyers.headoftp.route.projection.RoutePointProjection;
 import be.nicholasmeyers.headoftp.route.projection.RouteProjection;
 import be.nicholasmeyers.headoftp.route.usecase.CreateRouteUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.DeleteRouteUseCase;
+import be.nicholasmeyers.headoftp.route.usecase.FindAllRouteClimbsByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutePointsByRouteIdUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindAllRoutesUseCase;
 import be.nicholasmeyers.headoftp.route.usecase.FindRoutePointCenterByRouteIdUseCase;
@@ -57,6 +60,7 @@ public class RouteController implements RouteApi {
     private final PatchRouteUseCase patchRouteUseCase;
     private final FindAllRoutesUseCase findAllRoutesUseCase;
     private final FindAllRoutePointsByRouteIdUseCase findAllRoutePointsByRouteIdUseCase;
+    private final FindAllRouteClimbsByRouteIdUseCase findAllRouteClimbsByRouteIdUseCase;
     private final FindRoutePointCenterByRouteIdUseCase findRoutePointCenterByRouteIdUseCase;
     private final NavigateToMetersOnRouteUseCase navigateToMetersOnRouteUseCase;
     private final NavigateToTpOnRouteUseCase navigateToTpOnRouteUseCase;
@@ -139,6 +143,13 @@ public class RouteController implements RouteApi {
     }
 
     @Override
+    public ResponseEntity<List<RouteClimbResponseResource>> getRouteClimbByRouteId(UUID routeId) {
+        return ResponseEntity.ok(findAllRouteClimbsByRouteIdUseCase.findAllRouteClimbsByRouteId(routeId).stream()
+                .map(this::map)
+                .toList());
+    }
+
+    @Override
     public ResponseEntity<RoutePointResponseResource> getRoutePointCenterByRouteId(UUID routeId) {
         return ResponseEntity.ok(map(findRoutePointCenterByRouteIdUseCase.findRoutePointCenterByRouteId(routeId)
                 .orElse(BRUSSELS_CENTER)));
@@ -167,6 +178,17 @@ public class RouteController implements RouteApi {
                 .latitude(routePointProjection.latitude())
                 .longitude(routePointProjection.longitude())
                 .altitude(routePointProjection.altitude())
+                .distanceFromStartInMeter(routePointProjection.distanceFromStartInMeter())
+                .build();
+    }
+
+    private RouteClimbResponseResource map(RouteClimbProjection routeClimbProjection) {
+        return RouteClimbResponseResource.builder()
+                .startDistanceInMeter(routeClimbProjection.startDistanceInMeter())
+                .endDistanceInMeter(routeClimbProjection.endDistanceInMeter())
+                .lengthInMeter(routeClimbProjection.lengthInMeter())
+                .elevationGainInMeter(routeClimbProjection.elevationGainInMeter())
+                .averageGradient(routeClimbProjection.averageGradient())
                 .build();
     }
 
