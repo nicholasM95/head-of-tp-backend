@@ -9,11 +9,11 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FindAllDeviceIdsUseCase {
+public class FindAllDeviceUseCase {
 
     private final DeviceLocationQueryRepository deviceLocationQueryRepository;
 
-    public List<DeviceProjection> findAllDeviceIds() {
+    public List<DeviceProjection> findAllDevice() {
         log.info("Finding all device ids");
         return deviceLocationQueryRepository.findAllDevices();
     }

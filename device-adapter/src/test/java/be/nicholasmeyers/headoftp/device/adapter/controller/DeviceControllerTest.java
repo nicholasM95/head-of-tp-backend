@@ -4,7 +4,7 @@ import be.nicholasmeyers.headoftp.common.domain.validation.Notification;
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
 import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
-import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
+import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceUseCase;
 import be.nicholasmeyers.headoftp.device.usecase.FindDeviceByIdUseCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class DeviceControllerTest {
     private CreateDeviceLocationUseCase createDeviceLocationUseCase;
 
     @MockitoBean
-    private FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
+    private FindAllDeviceUseCase findAllDeviceUseCase;
 
     @MockitoBean
     private FindDeviceByIdUseCase findDeviceByIdUseCase;
@@ -414,7 +414,7 @@ public class DeviceControllerTest {
         @Test
         void givenDeviceLocationParams_whenGetDeviceLocation_thenSuccess() throws Exception {
             // Given
-            when(findAllDeviceIdsUseCase.findAllDeviceIds()).thenReturn(List.of(
+            when(findAllDeviceUseCase.findAllDevice()).thenReturn(List.of(
                     new DeviceProjection("484897", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000)),
                     new DeviceProjection("56846", LocalDateTime.of(2025, 7, 8, 23, 1, 53, 561000000))));
 

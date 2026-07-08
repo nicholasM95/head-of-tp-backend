@@ -7,7 +7,7 @@ import be.nicholasmeyers.headoftp.device.adapter.resource.DeviceResponseResource
 import be.nicholasmeyers.headoftp.device.domain.CreateDeviceLocationRequest;
 import be.nicholasmeyers.headoftp.device.projection.DeviceProjection;
 import be.nicholasmeyers.headoftp.device.usecase.CreateDeviceLocationUseCase;
-import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceIdsUseCase;
+import be.nicholasmeyers.headoftp.device.usecase.FindAllDeviceUseCase;
 import be.nicholasmeyers.headoftp.device.usecase.FindDeviceByIdUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class DeviceController implements DeviceApi {
     private static final ZoneId ZONE_ID_BRUSSELS = ZoneId.of("Europe/Brussels");
 
     private final CreateDeviceLocationUseCase  createDeviceLocationUseCase;
-    private final FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
+    private final FindAllDeviceUseCase findAllDeviceUseCase;
     private final FindDeviceByIdUseCase findDeviceByIdUseCase;
 
     @PostMapping(value = "/device", consumes = "application/x-www-form-urlencoded")
@@ -142,7 +142,7 @@ public class DeviceController implements DeviceApi {
 
     @Override
     public ResponseEntity<List<DeviceResponseResource>> findAllDevices() {
-        return ResponseEntity.ok(findAllDeviceIdsUseCase.findAllDeviceIds().stream().map(this::toDeviceResponseResource).toList());
+        return ResponseEntity.ok(findAllDeviceUseCase.findAllDevice().stream().map(this::toDeviceResponseResource).toList());
     }
 
     @Override

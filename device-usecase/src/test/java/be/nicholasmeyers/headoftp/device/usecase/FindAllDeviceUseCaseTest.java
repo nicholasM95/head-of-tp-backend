@@ -16,24 +16,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FindAllDeviceIdsUseCaseTest {
+public class FindAllDeviceUseCaseTest {
 
     @InjectMocks
-    private FindAllDeviceIdsUseCase findAllDeviceIdsUseCase;
+    private FindAllDeviceUseCase findAllDeviceUseCase;
 
     @Mock
     private DeviceLocationQueryRepository deviceLocationQueryRepository;
 
     @Nested
-    class FindAllDeviceIds {
+    class FindAllDevice {
         @Test
-        void given_whenFindAllDeviceIds_thenReturnListOfDevices() {
+        void given_whenFindAllDevice_thenReturnListOfDevices() {
             // Given
             List<DeviceProjection> projections = List.of(new DeviceProjection("234", LocalDateTime.now()), new DeviceProjection("654", LocalDateTime.now()));
             when(deviceLocationQueryRepository.findAllDevices()).thenReturn(projections);
 
             // When
-            List<DeviceProjection> result = findAllDeviceIdsUseCase.findAllDeviceIds();
+            List<DeviceProjection> result = findAllDeviceUseCase.findAllDevice();
 
             // Then
             assertThat(result).containsExactlyElementsOf(projections);
