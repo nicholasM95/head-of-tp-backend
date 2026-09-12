@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>25</java.version>
-        <jpx.version>3.2.1</jpx.version>
+        <jpx.version>4.0.0</jpx.version>
         <tika.version>3.3.1</tika.version>
     </properties>
 
